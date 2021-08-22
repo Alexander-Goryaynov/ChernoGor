@@ -6,6 +6,8 @@ import VueRouter from "vue-router";
 import Index from "./Index";
 
 window.Vue = require('vue').default;
+axios.defaults.withCredentials = true;
+
 // Глобальная регистрация компонентов
 /*Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('example-second-component', require('./components/ExampleSecondComponent.vue').default);*/

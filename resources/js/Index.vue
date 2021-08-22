@@ -14,6 +14,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{name: 'home2'}">Second</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'test'}">Test</router-link>
+                    </li>
                 </ul>
 
             </div>
