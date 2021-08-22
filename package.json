@@ -1,0 +1,29 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "npx mix",
+        "watch": "npx mix watch",
+        "prod": "npm run production",
+        "production": "npx mix -p"
+    },
+    "devDependencies": {
+        "axios": "^0.21.1",
+        "cross-env": "^5.1",
+        "laravel-mix": "^6.0.27",
+        "lodash": "^4.17.13",
+        "resolve-url-loader": "^4.0.0",
+        "sass": "^1.15.2",
+        "sass-loader": "^7.3.1",
+        "vue-loader": "^15.9.7",
+        "vue-template-compiler": "^2.6.14"
+    },
+    "dependencies": {
+        "bootstrap": "^5.0.2",
+        "jquery": "^3.6.0",
+        "popper.js": "^1.16.1",
+        "vue": "^2.6.14",
+        "vue-router": "^3.5.2",
+        "webpack": "^5.47.1"
+    }
+}
