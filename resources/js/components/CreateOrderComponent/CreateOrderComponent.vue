@@ -110,7 +110,7 @@ export default {
 }
 .back-light {
     border-radius: 20px;
-    background-color: #84d8ff;
+    background-color: #fdf8f8;
     font-weight: bold;
 }
 </style>
