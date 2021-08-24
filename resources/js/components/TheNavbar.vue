@@ -25,13 +25,13 @@
                     <div class="collapse navbar-collapse" id="navbarResponsive">
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <router-link class="nav-link" :to="{name: 'home'}"> Главная  </router-link>
+                                <router-link class="nav-link" :to="{name: 'home'}"> Главная </router-link>
                             </li>
                             <li class="nav-item">
                                 <router-link class="nav-link" :to="{name: 'services'}">Наши услуги</router-link>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Our Services</a>
+                                <router-link class="nav-link" :to="{name: 'create-order'}">Создать заявку</router-link>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Contact Us</a>

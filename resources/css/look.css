@@ -878,11 +878,13 @@ h5 {
 }
 
 .callback-form {
-    margin-top: 140px;
+    margin-top: 50px;
 }
 
 .callback-form .contact-form {
-    background-color: #75b3dc;
+    min-height:100%;
+    background:linear-gradient(0deg, rgba(117, 179, 220, 0.5), rgb(117, 179, 220, 0.5)), url(https://images.unsplash.com/photo-1603691176852-2982b137414f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80);
+    background-size:cover;
     padding: 60px;
     border-radius: 5px;
     text-align: center;
@@ -900,6 +902,12 @@ h5 {
     box-shadow: none;
     border: none;
     margin-bottom: 35px;
+}
+
+.contact-label {
+    color: #473a3a;
+    font-size: 18px;
+    margin: 1rem;
 }
 
 .callback-form .contact-form input:focus {
@@ -1264,7 +1272,7 @@ footer .contact-form button.filled-button:hover {
 }
 
 #tabs ul li a {
-    text-transform: capitalize;
+    text-transform: none;
     width: 100%;
     padding: 30px 30px;
     display: inline-block;

@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import TestComponent from "./components/TestComponent";
 import MainComponent from "./components/MainComponentItems/MainComponent";
 import ServiceComponent from "./components/ServicesComponent/ServiceComponent";
+import CreateOrderComponent from "./components/CreateOrderComponent/CreateOrderComponent";
 const routes = [
     {
         path: "/",
@@ -15,6 +16,11 @@ const routes = [
         path: "/services",
         component: ServiceComponent,
         name: "services",
+    },
+    {
+        path: "/create-order",
+        component: CreateOrderComponent,
+        name: "create-order",
     },
     {
         path: "/second",

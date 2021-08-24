@@ -16,10 +16,10 @@
             <div class="container">
                 <div class="row" id="tabs">
                     <div class="col-md-4">
-                        <div class="same-size" v-if="categories">
-                            <ul v-for="(cat, index) in categories" :key="index">
-                                <li>
-                                    <a :id="index" href="#" :class="['mb-1',{'text-white': active === index}]"
+                        <div v-if="categories">
+                            <ul  v-for="(cat, index) in categories" :key="index">
+                                <li >
+                                    <a :id="index" href="#" :class="['mb-1', {'text-white': active === index}]"
                                        @click.prevent="show(index)">{{ cat.name }}
                                     </a>
                                 </li>
@@ -98,9 +98,5 @@ export default {
     padding: 0;
     border: none;
     background: none;
-}
-
-.same-size {
-
 }
 </style>
