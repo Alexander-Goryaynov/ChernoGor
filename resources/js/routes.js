@@ -4,11 +4,17 @@ import ExampleSecondComponent from "./components/ExampleSecondComponent";
 import VueRouter from "vue-router";
 import TestComponent from "./components/TestComponent";
 import MainComponent from "./components/MainComponentItems/MainComponent";
+import ServiceComponent from "./components/ServicesComponent/ServiceComponent";
 const routes = [
     {
         path: "/",
         component: MainComponent,
         name: "home",
+    },
+    {
+        path: "/services",
+        component: ServiceComponent,
+        name: "services",
     },
     {
         path: "/second",
@@ -25,7 +31,9 @@ const routes = [
 
 const router = new VueRouter({
     routes, // сокращённая запись для `routes: routes`
-    mode: 'history' //убираем дефолтный хэш, который был необходим для старых браузеров
+    mode: 'history', //убираем дефолтный хэш, который был необходим для старых браузеров
+    linkActiveClass: 'active',
+    linkExactActiveClass: 'active'
 });
 
 export default router;
