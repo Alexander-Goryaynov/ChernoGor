@@ -17,10 +17,10 @@
                 <div class="row" id="tabs">
                     <div class="col-md-4">
                         <div v-if="categories">
-                            <ul  v-for="(cat, index) in categories" :key="index">
-                                <li >
-                                    <a :id="index" href="#" :class="['mb-1', {'text-white': active === index}]"
-                                       @click.prevent="show(index)">{{ cat.name }}
+                            <ul v-for="cat in categories" :key="cat.id + 'cat'">
+                                <li>
+                                    <a :id="cat.id" href="#" :class="['mb-1', {'text-white': active === cat.id}]"
+                                       @click.prevent="show(cat.id)">{{ cat.name }}
                                     </a>
                                 </li>
                             </ul>
@@ -39,9 +39,9 @@
                                 <h4 v-if="active !== null">{{ categories[active].name }}</h4>
                                 <h4 v-else>Пожалуйста, выберите категорию</h4>
                                 <hr>
-                                <div v-if="subheads">
-                                    <ul v-for="(sub, index) in subheads" :key="index + 'sub'">
-                                        <li><a class="text-white mb-2">{{ sub }}</a>
+                                <div v-if="subcategories">
+                                    <ul v-for="sub in subcategories" :key="sub.id + 'sub'">
+                                        <li><a class="text-white mb-2">{{ sub.name }}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -62,31 +62,92 @@ export default {
     data() {
         let categories = [
             {
+                id: 0,
                 name: 'Удостоверение сделок',
-                subheads: ['Доверенности', 'Брачный договор',
-                    'Договор о купле-продаже недвижимости', 'Договор займа', 'Договор о разделе совместного имущества'],
+                subcategories: [{
+                        id: 0,
+                        name: 'Доверенности',
+                        price: 5000
+                    }, {
+                        id: 1,
+                        name: 'Брачный договор',
+                        price: 5000
+                    }, {
+                        id: 2,
+                        name: 'Договор о купле-продаже недвижимости',
+                        price: 5000
+                    }, {
+                        id: 3,
+                        name: 'Проверка подлинности подписи',
+                        price: 5000
+                    }, {
+                        id: 4,
+                        name: 'Договор о разделе совместного имущества',
+                        price: 5000
+                    }
+            ]},
+            {
+                id: 1,
+                name: 'Удостоверение сделок 1',
+                subcategories: [{
+                    id: 0,
+                    name: 'Доверенности 1',
+                    price: 5000
+                }, {
+                    id: 1,
+                    name: 'Брачный договор 1',
+                    price: 5000
+                }, {
+                    id: 2,
+                    name: 'Договор о купле-продаже недвижимости 1',
+                    price: 5000
+                }, {
+                    id: 3,
+                    name: 'Проверка подлинности подписи',
+                    price: 5000
+                }, {
+                    id: 4,
+                    name: 'Договор о разделе совместного имущества',
+                    price: 5000
+                }]
             },
             {
+
+                id: 2,
                 name: 'Удостоверение сделок 2',
-                subheads: ['Доверенности 1', 'Брачный договор 1',
-                    'Договор о купле-продаже недвижимости1', 'Договор займа', 'Договор о разделе совместного имущества'],
-            },
-            {
-                name: 'Удостоверение сделок 3',
-                subheads: ['Доверенности 123', 'Брачный договор 123',
-                    'Договор о купле-продаже недвижимости1', 'Договор займа', 'Договор о разделе совместного имущества'],
-            },
+                subcategories: [{
+                    id: 0,
+                    name: 'Доверенности 2',
+                    price: 5000
+                }, {
+                    id: 1,
+                    name: 'Брачный договор 2',
+                    price: 5000
+                }, {
+                    id: 2,
+                    name: 'Договор о купле-продаже недвижимости 2',
+                    price: 5000
+                }, {
+                    id: 3,
+                    name: 'Проверка подлинности подписи',
+                    price: 5000
+                }, {
+                    id: 4,
+                    name: 'Договор о разделе совместного имущества',
+                    price: 5000
+                }]
+            }
         ];
         return {
             categories,
             active: null,
-            subheads: null
+            subcategories: null
         }
     },
     methods: {
         show(index) {
             this.active = index
-            this.subheads = this.categories[index].subheads;
+            this.subcategories = this.categories[index].subcategories;
         }
     },
     name: "ServiceComponent"

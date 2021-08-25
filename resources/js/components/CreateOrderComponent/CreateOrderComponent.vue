@@ -167,7 +167,6 @@ export default {
             {
                 id: 1,
                 name: 'Консультация',
-                coefficient: 1
             },
             {
                 id: 2,
