@@ -24,7 +24,7 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <fieldset>
-                                            <label for="selectNotary" class="text-white h3 float-left mb-2">
+                                            <label for="selectNotary" class="text-white h4 float-left mb-2">
                                                 Выбор нотариуса:
                                             </label>
                                             <select class="form-control rounded-select"
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <fieldset>
-                                            <label for="selectService" class="text-white h3 float-left mb-2">
+                                            <label for="selectService" class="text-white h4 float-left mb-2">
                                                 Выбор типа услуги:
                                             </label>
                                             <select class="form-control rounded-select"
@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <fieldset>
-                                            <label for="selectedSubcategory" class="text-white h3 float-left mb-2">
+                                            <label for="selectedSubcategory" class="text-white h4 float-left mb-2">
                                                 Выбор подкатегории услуги:
                                             </label>
                                             <select class="form-control rounded-select"
@@ -79,7 +79,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <fieldset>
-                                            <label for="selectDate" class="text-white h3 float-left mb-2">
+                                            <label for="selectDate" class="text-white h4 float-left mb-2">
                                                 Выбор даты:
                                             </label>
                                             <select class="form-control rounded-select"
@@ -99,7 +99,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <fieldset>
-                                            <label for="selectTime" class="text-white h3 float-left mb-2">
+                                            <label for="selectTime" class="text-white h4 float-left mb-2">
                                                 Выбор времени:
                                             </label>
                                             <select class="form-control rounded-select"
@@ -199,7 +199,7 @@ export default {
                 },
                     {
                         id: 1,
-                        name: 'Договоры о купля-продажа недвижимости',
+                        name: 'Договоры о купле-продаже недвижимости',
                         price: 5000
                     },
                     {
