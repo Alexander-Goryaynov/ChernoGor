@@ -34,10 +34,10 @@
                                 <router-link class="nav-link" :to="{name: 'create-order'}">Создать заявку</router-link>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contact Us</a>
+                                <router-link class="nav-link" :to="{name: 'register'}"> Регистрация </router-link>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">One Page</a>
+                                <router-link class="nav-link" :to="{name: 'login'}"> Войти </router-link>
                             </li>
                         </ul>
                     </div>

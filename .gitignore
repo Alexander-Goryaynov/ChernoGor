@@ -20,3 +20,4 @@ yarn-error.log
 /public/js/all.js
 /public/js/app.js
 /public/mix-manifest.json
+public/js/custom.js

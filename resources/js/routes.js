@@ -6,6 +6,8 @@ import TestComponent from "./components/TestComponent";
 import MainComponent from "./components/MainComponentItems/MainComponent";
 import ServiceComponent from "./components/ServicesComponent/ServiceComponent";
 import CreateOrderComponent from "./components/CreateOrderComponent/CreateOrderComponent";
+import RegisterComponent from "./components/AuthComponents/RegisterComponent";
+import LoginComponent from "./components/AuthComponents/LoginComponent";
 const routes = [
     {
         path: "/",
@@ -21,6 +23,16 @@ const routes = [
         path: "/create-order",
         component: CreateOrderComponent,
         name: "create-order",
+    },
+    {
+        path: "/register",
+        component: RegisterComponent,
+        name: "register",
+    },
+    {
+        path: "/login",
+        component: LoginComponent,
+        name: "login",
     },
     {
         path: "/second",

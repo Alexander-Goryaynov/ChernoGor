@@ -1194,6 +1194,17 @@ footer .contact-form button.filled-button:hover {
     color: #fff;
 }
 
+
+.page-mini-heading {
+    text-align: center;
+    background-image: url(../images/page-heading-bg.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 45px 0px 50px 0px;
+    color: #fff;
+}
+
 .page-heading h1 {
     text-transform: capitalize;
     font-size: 36px;
