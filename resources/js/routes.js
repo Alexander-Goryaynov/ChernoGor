@@ -8,6 +8,8 @@ import ServiceComponent from "./components/ServicesComponent/ServiceComponent";
 import CreateOrderComponent from "./components/CreateOrderComponent/CreateOrderComponent";
 import RegisterComponent from "./components/AuthComponents/RegisterComponent";
 import LoginComponent from "./components/AuthComponents/LoginComponent";
+import ServiceItemComponent from "./components/ServicesComponent/ServiceItemComponent";
+import ServiceSubItemComponent from "./components/ServicesComponent/ServiceSubItemComponent";
 const routes = [
     {
         path: "/",
@@ -15,9 +17,9 @@ const routes = [
         name: "home",
     },
     {
-        path: "/services",
+        path: "/categories",
         component: ServiceComponent,
-        name: "services",
+        name: "categories",
     },
     {
         path: "/create-order",
@@ -43,6 +45,16 @@ const routes = [
         path: "/test",
         component: TestComponent,
         name: "test",
+    },
+    {
+        path: "/categories/:id",
+        component: ServiceItemComponent,
+        name: "categories-item",
+    },
+    {
+        path: "/subcategories/:id",
+        component: ServiceSubItemComponent,
+        name: "subcategories-item",
     },
 
 ];

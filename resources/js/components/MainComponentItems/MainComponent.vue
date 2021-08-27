@@ -15,7 +15,10 @@ import MainStatsComponent from "./MainStatsComponent";
 
 export default {
     name: "MainComponent",
-    components: {MainBannerComponent, MainContentComponent, MainAwardsComponent, MainStatsComponent}
+    components: {MainBannerComponent, MainContentComponent, MainAwardsComponent, MainStatsComponent},
+    mounted() {
+        window.scrollTo(0, 0)
+    }
 }
 </script>
 

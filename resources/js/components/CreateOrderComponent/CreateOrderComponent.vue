@@ -294,6 +294,9 @@ export default {
                 this.price = parseFloat(this.subcategoriesList.find(x => x.id === this.selectedSubcategory).price) * coeff;
             }
         }
+    },
+    mounted() {
+        window.scrollTo(0, 0)
     }
 }
 </script>
