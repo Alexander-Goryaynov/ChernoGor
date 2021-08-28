@@ -10,6 +10,7 @@ import RegisterComponent from "./components/AuthComponents/RegisterComponent";
 import LoginComponent from "./components/AuthComponents/LoginComponent";
 import ServiceItemComponent from "./components/ServicesComponent/ServiceItemComponent";
 import ServiceSubItemComponent from "./components/ServicesComponent/ServiceSubItemComponent";
+import NotaryCardEditComponent from "./components/NotaryComponents/NotaryCardEditComponent";
 const routes = [
     {
         path: "/",
@@ -55,6 +56,11 @@ const routes = [
         path: "/subcategories/:id",
         component: ServiceSubItemComponent,
         name: "subcategories-item",
+    },
+    {
+        path: "/notaries/:id",
+        component: NotaryCardEditComponent,
+        name: "notaries-item",
     },
 
 ];
