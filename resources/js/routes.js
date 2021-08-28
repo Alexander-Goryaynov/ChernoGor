@@ -11,6 +11,7 @@ import LoginComponent from "./components/AuthComponents/LoginComponent";
 import ServiceItemComponent from "./components/ServicesComponent/ServiceItemComponent";
 import ServiceSubItemComponent from "./components/ServicesComponent/ServiceSubItemComponent";
 import NotaryCardEditComponent from "./components/NotaryComponents/NotaryCardEditComponent";
+import NotaryListComponent from "./components/NotaryComponents/NotaryListComponent";
 const routes = [
     {
         path: "/",
@@ -61,6 +62,11 @@ const routes = [
         path: "/notaries/:id",
         component: NotaryCardEditComponent,
         name: "notaries-item",
+    },
+    {
+        path: "/notaries",
+        component: NotaryListComponent,
+        name: "notaries",
     },
 
 ];

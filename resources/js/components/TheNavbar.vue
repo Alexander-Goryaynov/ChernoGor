@@ -39,6 +39,9 @@
                             <li class="nav-item">
                                 <router-link class="nav-link" :to="{name: 'login'}"> Войти </router-link>
                             </li>
+                            <li class="nav-item">
+                                <router-link class="nav-link" :to="{name: 'notaries'}"> Нотариусы </router-link>
+                            </li>
                         </ul>
                     </div>
                 </div>
