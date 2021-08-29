@@ -16,10 +16,8 @@ class CreateOrdersTable extends Migration
             $table->string('status');
             $table->timestamp('consultation_datetime');
             $table->timestamps();
-            $table->string('user_email');
-            $table->foreign('user_email')
-                ->references('email')
-                ->on('users')
+            $table->foreignId('user_id')
+                ->constrained('users')
                 ->cascadeOnUpdate();
             $table->foreignId('subcategory_id')
                 ->nullable()

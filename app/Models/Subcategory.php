@@ -11,4 +11,14 @@ class Subcategory extends Model
 
     protected $table = 'subcategories';
     public $timestamps = false;
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

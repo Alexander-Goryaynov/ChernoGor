@@ -10,4 +10,9 @@ class Qualification extends Model
     use HasFactory;
 
     public $timestamps = false;
+
+    public function notaries()
+    {
+        return $this->hasMany(Notary::class);
+    }
 }

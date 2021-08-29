@@ -11,4 +11,14 @@ class Notary extends Model
 
     protected $table = 'notaries';
     public $timestamps = false;
+
+    public function qualification()
+    {
+        return $this->belongsTo(Qualification::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
