@@ -2,9 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property float $price
+ * @property-read Category $category
+ * @property-read Collection|Order[] $orders
+ */
 class Subcategory extends Model
 {
     use HasFactory;
