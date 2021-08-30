@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -32,6 +33,11 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ])->validate();
+
+        Log::info('Created new user', [
+            'ip' => request('ip'),
+            'email' => $input['email']
+        ]);
 
         return User::create([
             'name' => $input['name'],

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CheckRole
 {
@@ -12,6 +13,11 @@ class CheckRole
         if ($request->user()->role === $role) {
             return $next($request);
         } else {
+            Log::warning('Access denied (wrong user role)', [
+                'ip' => $request->ip(),
+                'route' => $request->fullUrl(),
+                'user' => $request->user()
+            ]);
             return response()->json(
                 [
                     'error' => [
