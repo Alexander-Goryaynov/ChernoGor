@@ -106,7 +106,7 @@ export default {
         check() {
             const sub_name = (this.subcategory.name === this.new_name) || (this.new_name === '');
             console.log('sub_name ' + sub_name + '\n');
-            const sub_price = (this.subcategory.price === this.new_price) || (this.new_price === 'null') || (this.new_price < 1000);
+            const sub_price = (this.subcategory.price === this.new_price) || (this.new_price === null) || (this.new_price < 1000);
             console.log('sub_price ' + sub_price + '\n');
             console.log(sub_name && sub_price);
             return (sub_name && sub_price);
