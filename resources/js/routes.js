@@ -13,6 +13,9 @@ import ServiceSubItemComponent from "./components/ServicesComponent/ServiceSubIt
 import NotaryCardEditComponent from "./components/NotaryComponents/NotaryCardEditComponent";
 import NotaryListComponent from "./components/NotaryComponents/NotaryListComponent";
 import AdminOrdersComponent from "./components/AccountComponents/Admin/AdminOrdersComponent";
+import AdminUsersComponent from "./components/AccountComponents/Admin/AdminUsersComponent";
+import UserDataComponent from "./components/AccountComponents/User/UserDataComponent";
+import UserOrdersComponent from "./components/AccountComponents/User/UserOrdersComponent";
 const routes = [
     {
         path: "/",
@@ -73,6 +76,21 @@ const routes = [
         path: "/admin/orders",
         component: AdminOrdersComponent,
         name: "admin-orders",
+    },
+    {
+        path: "/admin/accounts",
+        component: AdminUsersComponent,
+        name: "admin-accounts",
+    },
+    {
+        path: "/account",
+        component: UserDataComponent,
+        name: "user-account",
+    },
+    {
+        path: "/account/orders",
+        component: UserOrdersComponent,
+        name: "user-account-orders",
     },
 
 ];
