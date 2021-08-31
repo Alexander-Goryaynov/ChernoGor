@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\CategoryBindingModel;
+use App\BindingModels\CategoryBindingModel;
 use App\Interfaces\ICategoryService;
 use App\Models\Category;
 use Illuminate\Support\Facades\Log;

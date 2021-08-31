@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\CategoryBindingModel;
+use App\BindingModels\CategoryBindingModel;
 use App\Interfaces\ICategoryService;
 use App\Validators\CategoryValidator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {

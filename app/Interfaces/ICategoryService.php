@@ -4,7 +4,7 @@
 namespace App\Interfaces;
 
 
-use App\CategoryBindingModel;
+use App\BindingModels\CategoryBindingModel;
 
 interface ICategoryService
 {
