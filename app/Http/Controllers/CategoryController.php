@@ -31,4 +31,9 @@ class CategoryController extends Controller
     {
         return response()->json($this->cService->getTreeWithSubcategories());
     }
+
+    public function select()
+    {
+        return response()->json($this->cService->getCategoriesListForSelect());
+    }
 }

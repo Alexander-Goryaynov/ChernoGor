@@ -8,7 +8,9 @@ use App\BindingModels\CategoryBindingModel;
 use App\Interfaces\ICategoryService;
 use App\Models\Category;
 use App\Models\Subcategory;
+use App\ViewModels\CategoriesSelectViewModel;
 use App\ViewModels\CategoriesTreeViewModel;
+use App\ViewModels\CategorySelectViewModel;
 use App\ViewModels\CategoryTreeViewModel;
 use App\ViewModels\SubcategoryTreeViewModel;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +50,15 @@ class CategoryService implements ICategoryService
                 $subcategories
             );
         }
+        return $result;
+    }
+
+    public function getCategoriesListForSelect(): CategoriesSelectViewModel
+    {
+        $result = new CategoriesSelectViewModel();
+        $result->categories = Category::all()
+            ->map(fn (Category $cat) => new CategorySelectViewModel($cat->id, $cat->name))
+            ->toArray();
         return $result;
     }
 }

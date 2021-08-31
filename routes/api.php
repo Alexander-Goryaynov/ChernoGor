@@ -12,7 +12,12 @@ Route::prefix('/v1')->group(function() {
         return $request->user();
     });
     Route::get('/qualifications/select', [QualificationController::class, 'select']);
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::post('/subcategories', [SubcategoryController::class, 'store']);
+    Route::prefix('/categories')->group(function() {
+        Route::post('/', [CategoryController::class, 'store']);
+        Route::get('/select', [CategoryController::class, 'select']);
+    });
+    Route::prefix('/subcategories')->group(function() {
+        Route::post('/', [SubcategoryController::class, 'store']);
+    });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
 });
