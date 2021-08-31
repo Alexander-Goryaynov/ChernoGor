@@ -27,4 +27,16 @@ class SubcategoryController extends Controller
             )
         );
     }
+
+    public function select(Request $request)
+    {
+        if ($request->missing('category-id')) {
+            return response('', 422);
+        }
+        return response()->json(
+            $this->sService->getSubcategoriesListForSelect(
+                $request->query('category-id')
+            )
+        );
+    }
 }

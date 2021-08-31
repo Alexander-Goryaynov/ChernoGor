@@ -18,6 +18,7 @@ Route::prefix('/v1')->group(function() {
     });
     Route::prefix('/subcategories')->group(function() {
         Route::post('/', [SubcategoryController::class, 'store']);
+        Route::get('/select', [SubcategoryController::class, 'select']);
     });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
 });
