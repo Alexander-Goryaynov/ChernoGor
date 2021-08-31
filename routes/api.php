@@ -15,6 +15,7 @@ Route::prefix('/v1')->group(function() {
     Route::prefix('/categories')->group(function() {
         Route::post('/', [CategoryController::class, 'store']);
         Route::get('/select', [CategoryController::class, 'select']);
+        Route::get('/{id}/edit', [CategoryController::class, 'edit']);
     });
     Route::prefix('/subcategories')->group(function() {
         Route::post('/', [SubcategoryController::class, 'store']);

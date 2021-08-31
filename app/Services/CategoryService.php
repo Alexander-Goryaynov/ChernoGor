@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Subcategory;
 use App\ViewModels\CategoriesSelectViewModel;
 use App\ViewModels\CategoriesTreeViewModel;
+use App\ViewModels\CategoryEditorViewModel;
 use App\ViewModels\CategorySelectViewModel;
 use App\ViewModels\CategoryTreeViewModel;
 use App\ViewModels\SubcategoryTreeViewModel;
@@ -60,5 +61,12 @@ class CategoryService implements ICategoryService
             ->map(fn (Category $cat) => new CategorySelectViewModel($cat->id, $cat->name))
             ->toArray();
         return $result;
+    }
+
+    public function getCategoryForEditing(int $id): CategoryEditorViewModel
+    {
+        /**@var Category $category*/
+        $category = Category::query()->findOrFail($id);
+        return new CategoryEditorViewModel($category->name);
     }
 }

@@ -36,4 +36,9 @@ class CategoryController extends Controller
     {
         return response()->json($this->cService->getCategoriesListForSelect());
     }
+
+    public function edit(Request $request, int $id)
+    {
+        return response()->json($this->cService->getCategoryForEditing($id));
+    }
 }
