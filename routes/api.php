@@ -14,4 +14,5 @@ Route::prefix('/v1')->group(function() {
     Route::get('/qualifications/select', [QualificationController::class, 'select']);
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::post('/subcategories', [SubcategoryController::class, 'store']);
+    Route::get('/services/tree', [CategoryController::class, 'tree']);
 });

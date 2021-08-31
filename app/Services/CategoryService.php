@@ -7,6 +7,10 @@ namespace App\Services;
 use App\BindingModels\CategoryBindingModel;
 use App\Interfaces\ICategoryService;
 use App\Models\Category;
+use App\Models\Subcategory;
+use App\ViewModels\CategoriesTreeViewModel;
+use App\ViewModels\CategoryTreeViewModel;
+use App\ViewModels\SubcategoryTreeViewModel;
 use Illuminate\Support\Facades\Log;
 
 class CategoryService implements ICategoryService
@@ -21,5 +25,29 @@ class CategoryService implements ICategoryService
             'Created new category',
             ['id' => $category->id]
         );
+    }
+
+    public function getTreeWithSubcategories(): CategoriesTreeViewModel
+    {
+        $result = new CategoriesTreeViewModel();
+        $categories = Category::all();
+        foreach ($categories as $category) {
+            $subcategories = [];
+            $category->subcategories()->get()->map(
+                function(Subcategory $subcat) use (&$subcategories) {
+                    $subcategories[] = new SubcategoryTreeViewModel(
+                        $subcat->id,
+                        $subcat->name,
+                        $subcat->price
+                    );
+                }
+            );
+            $result->categories[] = new CategoryTreeViewModel(
+                $category->id,
+                $category->name,
+                $subcategories
+            );
+        }
+        return $result;
     }
 }

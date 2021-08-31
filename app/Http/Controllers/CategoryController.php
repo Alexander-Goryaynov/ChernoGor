@@ -26,4 +26,9 @@ class CategoryController extends Controller
         );
         return response('', 201);
     }
+
+    public function tree()
+    {
+        return response()->json($this->cService->getTreeWithSubcategories());
+    }
 }
