@@ -50,7 +50,8 @@
                                         <button v-if="isAdmin" class="action-button float-right"
                                                 @click="">Удалить <i class="fas fa-trash-alt"></i>
                                         </button>
-                                        <button v-if="isAdmin" class="action-button float-right mb-1 mr-1" @click="editSub(sub.id)">
+                                        <button v-if="isAdmin"
+                                                class="action-button float-right mb-1 mr-1" @click="editSub(sub.id, sub.name, sub.price)">
                                             Изменить <i class="far fa-edit"></i>
                                         </button>
                                         <li><a class="text-white mb-2">{{ sub.name }}</a>
@@ -101,7 +102,7 @@ export default {
             },
             {
                 id: 1,
-                name: 'Удостоверение сделок 1',
+                name: 'Консультация',
                 subcategories: [{
                     id: 5,
                     name: 'Доверенности 1',
@@ -127,7 +128,7 @@ export default {
             {
 
                 id: 2,
-                name: 'Удостоверение сделок 2',
+                name: 'Выдача доверенностей',
                 subcategories: [{
                     id: 10,
                     name: 'Доверенности 2',
@@ -160,7 +161,7 @@ export default {
             categories,
             active: null,
             subcategories: null,
-            isAdmin: true
+            isAdmin: true,
         }
     },
     methods: {
@@ -174,8 +175,16 @@ export default {
         edit(index) {
             this.$router.push('/categories/' + index);
         },
-        editSub(index) {
-            this.$router.push('/subcategories/' + index);
+        editSub(index, name, price) {
+            this.$router.push({
+                name: 'subcategories-item',
+                params: {
+                    id: parseInt(index),
+                    name: name,
+                    price: price,
+                    category_id: this.active
+                }
+            })
         }
     },
     name: "ServiceComponent",

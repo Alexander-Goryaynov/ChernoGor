@@ -61,6 +61,7 @@ const routes = [
         path: "/subcategories/:id",
         component: ServiceSubItemComponent,
         name: "subcategories-item",
+        props: true
     },
     {
         path: "/notaries/:id",

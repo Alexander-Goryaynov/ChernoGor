@@ -31,6 +31,15 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
                                             <fieldset>
+                                                <select class="form-control rounded-select"
+                                                        name="catName"
+                                                        id="catName"
+                                                        v-model="new_category">
+                                                        <option v-for="item in categories" :selected="category_id === item.id" :value="item.id">{{ item.name }}
+                                                        </option>
+                                                </select>
+                                            </fieldset>
+                                            <fieldset>
                                                 <input name="name" type="text" v-model="new_name" class="form-control"
                                                        id="name">
                                             </fieldset>
@@ -61,8 +70,15 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 
 export default {
+    props: {
+        id: Number,
+        name: String,
+        price: Number,
+        category_id: Number
+    },
     data() {
         let subcategory = {
             id: '',
@@ -73,6 +89,8 @@ export default {
             subcategory,
             new_name: '',
             new_price: '',
+            new_category: '',
+            categories: []
         }
     },
     methods: {
@@ -83,14 +101,23 @@ export default {
         }
     },
     created() {
-        const subCatId = this.$route.params.id;
-        this.subcategory = {
-            id: this.$route.params.id,
-            name: 'Брачный договор',
-            price: 5000
-        }
-        this.new_name = this.subcategory.name;
-        this.new_price = this.subcategory.price;
+
+        this.new_name = this.name;
+        this.new_price = this.price;
+        this.new_category =  this.category_id
+        this.categories = [{
+                id: 0,
+                name: 'Удостоверение сделок',
+            },
+            {
+                id: 1,
+                name: 'Консультация',
+            },
+            {
+                id: 2,
+                name: 'Выдача доверенностей',
+            },
+        ];
         /*
        axios.get(`/api/v1/subcategories/${subCatId}`).then(response => {
            // if (response.data.status === 200)
@@ -104,16 +131,29 @@ export default {
     name: "ServiceItemComponent",
     computed: {
         check() {
-            const sub_name = (this.subcategory.name === this.new_name) || (this.new_name === '');
-            console.log('sub_name ' + sub_name + '\n');
-            const sub_price = (this.subcategory.price === this.new_price) || (this.new_price === null) || (this.new_price < 1000);
-            console.log('sub_price ' + sub_price + '\n');
-            console.log(sub_name && sub_price);
-            return (sub_name && sub_price);
+            const sub_cat_id = (this.new_category === this.category_id) || (this.new_category === null);
+            if (!sub_cat_id && this.new_name !== '' && this.new_price !== null) {
+                return false
+            }
+            else {
+                const sub_name = (this.name === this.new_name) || (this.new_name === '');
+                const sub_price = (this.price === this.new_price) || (this.new_price === null) || (this.new_price < 1000);
+                return (sub_name && sub_price);
+            }
         }
     },
     mounted() {
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
+        if (!this.name || !this.price || this.category_id === null) {
+            Swal.fire({
+                title: 'Ошибка',
+                text: 'Сначала выберите категорию',
+                icon: 'error',
+                timer: 1000,
+            }).then((result) => {
+                this.$router.push('/categories/');
+            });
+        }
     }
 }
 </script>
@@ -138,4 +178,23 @@ export default {
     color: #317aa4;
 }
 
+.rounded-select {
+    border-radius: 10px;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    padding: 0px 15px;
+    color: #6a6a6a;
+    font-size: 18px;
+    text-transform: none;
+    box-shadow: none;
+    border: none;
+    margin-bottom: 35px;
+}
+
+.back-light {
+    border-radius: 20px;
+    background-color: #fdf8f8;
+    font-weight: bold;
+}
 </style>
