@@ -9,6 +9,7 @@ use App\Interfaces\ISubcategoryService;
 use App\Models\Category;
 use App\Models\Subcategory;
 use App\ViewModels\SubcategoriesSelectViewModel;
+use App\ViewModels\SubcategoryEditorViewModel;
 use App\ViewModels\SubcategorySelectViewModel;
 use Illuminate\Support\Facades\Log;
 
@@ -42,5 +43,16 @@ class SubcategoryService implements ISubcategoryService
             )
         )->toArray();
         return $result;
+    }
+
+    public function getSubcategoryForEditing(int $id): SubcategoryEditorViewModel
+    {
+        /**@var Subcategory $subcategory*/
+        $subcategory = Subcategory::query()->findOrFail($id);
+        return new SubcategoryEditorViewModel(
+            $subcategory->name,
+            $subcategory->price,
+            $subcategory->category->id
+        );
     }
 }

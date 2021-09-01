@@ -39,4 +39,9 @@ class SubcategoryController extends Controller
             )
         );
     }
+
+    public function edit(Request $request, int $id)
+    {
+        return response()->json($this->sService->getSubcategoryForEditing($id));
+    }
 }

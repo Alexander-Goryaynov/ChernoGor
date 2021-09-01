@@ -20,6 +20,7 @@ Route::prefix('/v1')->group(function() {
     Route::prefix('/subcategories')->group(function() {
         Route::post('/', [SubcategoryController::class, 'store']);
         Route::get('/select', [SubcategoryController::class, 'select']);
+        Route::get('/{id}/edit', [SubcategoryController::class, 'edit']);
     });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
 });
