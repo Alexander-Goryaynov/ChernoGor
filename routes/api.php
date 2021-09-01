@@ -22,6 +22,7 @@ Route::prefix('/v1')->group(function() {
         Route::post('/', [SubcategoryController::class, 'store']);
         Route::get('/select', [SubcategoryController::class, 'select']);
         Route::get('/{id}/edit', [SubcategoryController::class, 'edit']);
+        Route::put('/{id}', [SubcategoryController::class, 'update']);
     });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
 });

@@ -15,4 +15,6 @@ interface ISubcategoryService
     public function getSubcategoriesListForSelect(int $categoryId): SubcategoriesSelectViewModel;
 
     public function getSubcategoryForEditing(int $id): SubcategoryEditorViewModel;
+
+    public function updateSubcategory(int $id, SubcategoryBindingModel $model): void;
 }

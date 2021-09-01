@@ -55,4 +55,22 @@ class SubcategoryService implements ISubcategoryService
             $subcategory->category->id
         );
     }
+
+    public function updateSubcategory(int $id, SubcategoryBindingModel $model): void
+    {
+        /**@var Subcategory $subcategory*/
+        $subcategory = Subcategory::query()->findOrFail($id);
+        $subcategory->name = $model->name;
+        $subcategory->price = $model->price;
+        $subcategory->category_id = $model->categoryId;
+        $subcategory->save();
+        Log::info(
+            "Updated subcategory",
+            [
+                'ip' => request()->ip(),
+                'id' => $id,
+                'newData' => $model
+            ]
+        );
+    }
 }

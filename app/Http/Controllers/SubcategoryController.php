@@ -44,4 +44,14 @@ class SubcategoryController extends Controller
     {
         return response()->json($this->sService->getSubcategoryForEditing($id));
     }
+
+    public function update(Request $request, int $id)
+    {
+        SubcategoryValidator::validate($request);
+        $this->sService->updateSubcategory($id, new SubcategoryBindingModel(
+            $request->input('name'),
+            $request->input('price'),
+            $request->input('category_id')
+        ));
+    }
 }
