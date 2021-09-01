@@ -69,4 +69,20 @@ class CategoryService implements ICategoryService
         $category = Category::query()->findOrFail($id);
         return new CategoryEditorViewModel($category->name);
     }
+
+    public function updateCategory(int $id, CategoryBindingModel $model): void
+    {
+        /**@var Category $category*/
+        $category = Category::query()->findOrFail($id);
+        $category->name = $model->name;
+        $category->save();
+        Log::info(
+            "Updated category",
+            [
+                'ip' => request()->ip(),
+                'id' => $id,
+                'newData' => $model
+            ]
+        );
+    }
 }

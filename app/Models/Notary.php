@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $photo_path
  * @property string $office_address
  * @property array $schedule
+ * @property int $qualification_id
  * @property-read Collection|Order[] $orders
  * @property-read Qualification $qualification
  */

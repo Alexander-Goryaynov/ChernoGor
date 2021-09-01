@@ -14,6 +14,9 @@ use Illuminate\Support\Carbon;
  * @property string $consultation_datetime
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int $notary_id
+ * @property int $subcategory_id
+ * @property int $user_id
  * @property-read Notary|null $notary
  * @property-read Subcategory|null $subcategory
  * @property-read User $user

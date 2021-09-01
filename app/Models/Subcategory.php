@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property float $price
+ * @property int $category_id
  * @property-read Category $category
  * @property-read Collection|Order[] $orders
  */

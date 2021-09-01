@@ -18,4 +18,6 @@ interface ICategoryService
     public function getCategoriesListForSelect(): CategoriesSelectViewModel;
 
     public function getCategoryForEditing(int $id): CategoryEditorViewModel;
+
+    public function updateCategory(int $id, CategoryBindingModel $model): void;
 }

@@ -41,4 +41,10 @@ class CategoryController extends Controller
     {
         return response()->json($this->cService->getCategoryForEditing($id));
     }
+
+    public function update(Request $request, int $id)
+    {
+        CategoryValidator::validate($request);
+        $this->cService->updateCategory($id, new CategoryBindingModel($request->input('name')));
+    }
 }
