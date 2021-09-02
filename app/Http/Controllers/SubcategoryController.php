@@ -40,7 +40,7 @@ class SubcategoryController extends Controller
         );
     }
 
-    public function edit(Request $request, int $id)
+    public function edit(int $id)
     {
         return response()->json($this->sService->getSubcategoryForEditing($id));
     }
@@ -53,5 +53,10 @@ class SubcategoryController extends Controller
             $request->input('price'),
             $request->input('category_id')
         ));
+    }
+
+    public function destroy(int $id)
+    {
+        $this->sService->deleteSubcategory($id);
     }
 }

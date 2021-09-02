@@ -17,12 +17,14 @@ Route::prefix('/v1')->group(function() {
         Route::get('/select', [CategoryController::class, 'select']);
         Route::get('/{id}/edit', [CategoryController::class, 'edit']);
         Route::put('/{id}', [CategoryController::class, 'update']);
+        Route::delete('/{id}', [CategoryController::class, 'destroy']);
     });
     Route::prefix('/subcategories')->group(function() {
         Route::post('/', [SubcategoryController::class, 'store']);
         Route::get('/select', [SubcategoryController::class, 'select']);
         Route::get('/{id}/edit', [SubcategoryController::class, 'edit']);
         Route::put('/{id}', [SubcategoryController::class, 'update']);
+        Route::delete('/{id}', [SubcategoryController::class, 'destroy']);
     });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
 });

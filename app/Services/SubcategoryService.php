@@ -73,4 +73,17 @@ class SubcategoryService implements ISubcategoryService
             ]
         );
     }
+
+    public function deleteSubcategory(int $id): void
+    {
+        // Also sets order.subcategory_id to null in database
+        Subcategory::query()->findOrFail($id)->delete();
+        Log::info(
+            "Deleted subcategory",
+            [
+                'ip' => request()->ip(),
+                'id' => $id
+            ]
+        );
+    }
 }

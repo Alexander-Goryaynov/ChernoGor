@@ -37,7 +37,7 @@ class CategoryController extends Controller
         return response()->json($this->cService->getCategoriesListForSelect());
     }
 
-    public function edit(Request $request, int $id)
+    public function edit(int $id)
     {
         return response()->json($this->cService->getCategoryForEditing($id));
     }
@@ -46,5 +46,10 @@ class CategoryController extends Controller
     {
         CategoryValidator::validate($request);
         $this->cService->updateCategory($id, new CategoryBindingModel($request->input('name')));
+    }
+
+    public function destroy(int $id)
+    {
+        $this->cService->deleteCategory($id);
     }
 }

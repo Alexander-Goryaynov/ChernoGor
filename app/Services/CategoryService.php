@@ -85,4 +85,17 @@ class CategoryService implements ICategoryService
             ]
         );
     }
+
+    public function deleteCategory(int $id): void
+    {
+        // Also deletes all child subcategories in database
+        Category::query()->findOrFail($id)->delete();
+        Log::info(
+            "Deleted category",
+            [
+                'ip' => request()->ip(),
+                'id' => $id
+            ]
+        );
+    }
 }

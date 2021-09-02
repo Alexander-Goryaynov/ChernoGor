@@ -17,4 +17,6 @@ interface ISubcategoryService
     public function getSubcategoryForEditing(int $id): SubcategoryEditorViewModel;
 
     public function updateSubcategory(int $id, SubcategoryBindingModel $model): void;
+
+    public function deleteSubcategory(int $id): void;
 }

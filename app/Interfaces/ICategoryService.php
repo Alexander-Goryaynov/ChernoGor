@@ -20,4 +20,6 @@ interface ICategoryService
     public function getCategoryForEditing(int $id): CategoryEditorViewModel;
 
     public function updateCategory(int $id, CategoryBindingModel $model): void;
+
+    public function deleteCategory(int $id): void;
 }
