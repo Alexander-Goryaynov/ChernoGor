@@ -26,6 +26,7 @@ class SubcategoryController extends Controller
                 $request->input('category_id')
             )
         );
+        return response('', 201);
     }
 
     public function select(Request $request)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\NotaryController;
 use App\Http\Controllers\QualificationController;
 use App\Http\Controllers\SubcategoryController;
 use Illuminate\Http\Request;
@@ -27,4 +28,7 @@ Route::prefix('/v1')->group(function() {
         Route::delete('/{id}', [SubcategoryController::class, 'destroy']);
     });
     Route::get('/services/tree', [CategoryController::class, 'tree']);
+    Route::prefix('/notaries')->group(function() {
+        Route::post('/', [NotaryController::class, 'store']);
+    });
 });
