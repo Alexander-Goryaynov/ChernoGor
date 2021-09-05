@@ -10,6 +10,8 @@ use App\Helpers\ImageHelper;
 use App\Interfaces\INotaryService;
 use App\Models\Notary;
 use App\Models\Qualification;
+use App\ViewModels\NotariesSelectViewModel;
+use App\ViewModels\NotarySelectViewModel;
 use Illuminate\Support\Facades\Log;
 
 class NotaryService implements INotaryService
@@ -35,6 +37,21 @@ class NotaryService implements INotaryService
                 'data' => $model
             ]
         );
+    }
+
+    public function getNotariesListForSelect(): NotariesSelectViewModel
+    {
+        $result = new NotariesSelectViewModel();
+        $result->notaries = Notary::query()
+            ->get()
+            ->map(
+                fn(Notary $n) => new NotarySelectViewModel(
+                    $n->id,
+                    $n->fio,
+                    $n->qualification->coefficient
+                )
+            )->toArray();
+        return $result;
     }
 
     /** @param int[][] $schedule */

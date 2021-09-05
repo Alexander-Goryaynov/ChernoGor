@@ -30,5 +30,6 @@ Route::prefix('/v1')->group(function() {
     Route::get('/services/tree', [CategoryController::class, 'tree']);
     Route::prefix('/notaries')->group(function() {
         Route::post('/', [NotaryController::class, 'store']);
+        Route::get('/select', [NotaryController::class, 'select']);
     });
 });

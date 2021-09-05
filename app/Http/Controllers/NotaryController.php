@@ -29,4 +29,9 @@ class NotaryController extends Controller
         ));
         return response('', 201);
     }
+
+    public function select()
+    {
+        return response()->json($this->nService->getNotariesListForSelect());
+    }
 }
