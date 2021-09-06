@@ -8,7 +8,7 @@ class NotaryBindingModel
 {
     public string $fio;
     public string $description;
-    public string $photo;
+    public ?string $photo;
     public string $officeAddress;
     public int $qualificationId;
     /**@var int[][] */
@@ -16,7 +16,7 @@ class NotaryBindingModel
 
     /** @param int[][] $schedule */
     public function __construct(
-        string $fio, string $description, string $photo,
+        string $fio, string $description, ?string $photo,
         string $officeAddress, int $qualificationId, array $schedule
     )
     {

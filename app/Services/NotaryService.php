@@ -10,11 +10,13 @@ use App\Helpers\ImageHelper;
 use App\Interfaces\INotaryService;
 use App\Models\Notary;
 use App\Models\Qualification;
+use App\Settings\Photo;
 use App\ViewModels\NotariesSelectViewModel;
 use App\ViewModels\NotariesViewModel;
 use App\ViewModels\NotarySelectViewModel;
 use App\ViewModels\NotaryViewModel;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class NotaryService implements INotaryService
@@ -22,7 +24,8 @@ class NotaryService implements INotaryService
     public function createNotary(NotaryBindingModel $model): void
     {
         $this->removeScheduleForceRestrictions($model->schedule);
-        $photoPath = ImageHelper::saveOnDisk($model->photo, 'notaries/', 240, 240);
+        $photoPath = ImageHelper::saveOnDisk($model->photo,
+            'notaries/', Photo::WIDTH, Photo::HEIGHT);
         $notary = new Notary();
         $notary->fio = $model->fio;
         $notary->description = $model->description;
@@ -86,6 +89,32 @@ class NotaryService implements INotaryService
                 )
             )->values()->toArray();
         return $result;
+    }
+
+    public function updateNotary(int $id, NotaryBindingModel $model): void
+    {
+        $this->removeScheduleForceRestrictions($model->schedule);
+        /**@var Notary $notary*/
+        $notary = Notary::query()->findOrFail($id);
+        $notary->fio = $model->fio;
+        $notary->description = $model->description;
+        $notary->office_address = $model->officeAddress;
+        $notary->qualification_id = $model->qualificationId;
+        $notary->schedule = json_encode($model->schedule);
+        if (isset($model->photo)) {
+            Storage::delete($notary->photo_path);
+            $notary->photo_path = ImageHelper::saveOnDisk($model->photo,
+                'notaries/', Photo::WIDTH, Photo::HEIGHT);
+        }
+        $notary->save();
+        Log::info(
+            "Updated notary",
+            [
+                'ip' => request()->ip(),
+                'id' => $id,
+                'newData' => $model
+            ]
+        );
     }
 
     /** @param int[][] $schedule */

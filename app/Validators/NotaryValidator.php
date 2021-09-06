@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class NotaryValidator
 {
@@ -23,7 +24,14 @@ class NotaryValidator
             [
                 'fio' => ['required', 'string', "regex:$fioPattern"],
                 'description' => 'required|string|max:200',
-                'photo' => ['required', 'string', "regex:$baseImagePattern"],
+                'photo' => [
+                    // Client doesn't have to attach a new photo while updating the notary
+                    Rule::requiredIf(function() use ($request) {
+                        return $request->isMethod('post');
+                    }),
+                    'string',
+                    "regex:$baseImagePattern"
+                ],
                 'office_address' => 'required|string|max:200',
                 'qualification_id' => 'required|integer|min:0',
                 'schedule' => 'required|array'

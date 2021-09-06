@@ -15,4 +15,6 @@ interface INotaryService
     public function getNotariesListForSelect(): NotariesSelectViewModel;
 
     public function getNotariesList(?int $qualificationId, ?string $searchFio): NotariesViewModel;
+
+    public function updateNotary(int $id, NotaryBindingModel $model): void;
 }

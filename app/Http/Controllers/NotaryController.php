@@ -47,4 +47,17 @@ class NotaryController extends Controller
             JSON_UNESCAPED_SLASHES
         );
     }
+
+    public function update(Request $request, int $id)
+    {
+        NotaryValidator::validate($request);
+        $this->nService->updateNotary($id, new NotaryBindingModel(
+            $request->input('fio'),
+            $request->input('description'),
+            $request->input('photo'),
+            $request->input('office_address'),
+            $request->input('qualification_id'),
+            $request->input('schedule')
+        ));
+    }
 }

@@ -32,5 +32,6 @@ Route::prefix('/v1')->group(function() {
         Route::post('/', [NotaryController::class, 'store']);
         Route::get('/select', [NotaryController::class, 'select']);
         Route::get('/', [NotaryController::class, 'index']);
+        Route::put('/{id}', [NotaryController::class, 'update']);
     });
 });

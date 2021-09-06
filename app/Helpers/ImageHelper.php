@@ -21,7 +21,7 @@ class ImageHelper
         $imageCode = $baseParts[1];
         $imageExtension = (Str::of($baseParts[0])->contains('png')) ? '.png' : '.jpeg';
         $dataToWrite = base64_decode($imageCode);
-        $newFilePathInStorage = $folder . Str::random() . $imageExtension;
+        $newFilePathInStorage = $folder . Str::random(32) . $imageExtension;
         Storage::put($newFilePathInStorage, $dataToWrite);
         static::resize($newFilePathInStorage, $width, $height);
         return $newFilePathInStorage;
