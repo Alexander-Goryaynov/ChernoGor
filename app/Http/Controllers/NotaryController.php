@@ -34,4 +34,17 @@ class NotaryController extends Controller
     {
         return response()->json($this->nService->getNotariesListForSelect());
     }
+
+    public function index(Request $request)
+    {
+        return response()->json(
+            $this->nService->getNotariesList(
+                $request->query('qualification-id'),
+                $request->query('search-fio')
+            ),
+            200,
+            [],
+            JSON_UNESCAPED_SLASHES
+        );
+    }
 }

@@ -27,6 +27,18 @@ class ImageHelper
         return $newFilePathInStorage;
     }
 
+    /**
+     * @param string $path Image file location relative to local storage
+     * @return string Base64-encoded image
+     */
+    public static function loadFromDisk(string $path): string
+    {
+        $baseCode = base64_encode(Storage::get($path));
+        $mimeType = Storage::mimeType($path);
+        $baseHeader = "data:$mimeType;base64,";
+        return $baseHeader . $baseCode;
+    }
+
     private static function resize(string $path, int $newWidth, int $newHeight): void
     {
         ImageManagerStatic::make(Storage::path($path))
