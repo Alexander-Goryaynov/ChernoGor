@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NotaryController;
 use App\Http\Controllers\QualificationController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,5 @@ Route::prefix('/v1')->group(function() {
         Route::put('/{id}', [NotaryController::class, 'update']);
         Route::delete('/{id}', [NotaryController::class, 'destroy']);
     });
+    Route::put('/account', [UserController::class, 'update']);
 });
