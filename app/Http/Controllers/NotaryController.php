@@ -60,4 +60,9 @@ class NotaryController extends Controller
             $request->input('schedule')
         ));
     }
+
+    public function destroy(int $id)
+    {
+        $this->nService->deleteNotary($id);
+    }
 }

@@ -117,6 +117,19 @@ class NotaryService implements INotaryService
         );
     }
 
+    public function deleteNotary(int $id): void
+    {
+        // Also sets order.notary_id to null in database
+        Notary::query()->findOrFail($id)->delete();
+        Log::info(
+            "Deleted notary",
+            [
+                'ip' => request()->ip(),
+                'id' => $id
+            ]
+        );
+    }
+
     /** @param int[][] $schedule */
     private function removeScheduleForceRestrictions(array &$schedule): void
     {
