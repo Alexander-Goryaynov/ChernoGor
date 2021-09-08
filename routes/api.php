@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NotaryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QualificationController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserController;
@@ -37,4 +38,7 @@ Route::prefix('/v1')->group(function() {
         Route::delete('/{id}', [NotaryController::class, 'destroy']);
     });
     Route::put('/account', [UserController::class, 'update']);
+    Route::prefix('/orders')->group(function() {
+        Route::post('/', [OrderController::class, 'store']);
+    });
 });

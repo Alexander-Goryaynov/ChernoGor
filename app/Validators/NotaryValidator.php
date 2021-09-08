@@ -16,7 +16,6 @@ class NotaryValidator
 {
     public static function validate(Request $request): void
     {
-        // TODO сделать фото необязательным при редактировании
         $fioPattern = '/^([а-яА-Я]+\s?){2,3}$/u';
         $baseImagePattern = "/^data:image\/(jpeg|png);base64,/";
         $validator = Validator::make(
