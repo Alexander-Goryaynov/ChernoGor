@@ -77,6 +77,28 @@ class OrderService implements IOrderService
         );
     }
 
+    public function finishOrder(int $id): void
+    {
+        /**@var Order $order*/
+        $order = Order::query()->findOrFail($id);
+        if ($order->status !== OrderStatus::PROCESSING()->getValue()) {
+            throw new WrongOrderStatusException(
+                OrderStatus::from($order->status),
+                OrderStatus::FINISHED()
+            );
+        }
+        $order->status = OrderStatus::FINISHED();
+        $order->save();
+        Log::info(
+            "Finished order",
+            [
+                'ip' => request()->ip(),
+                'user' => request()->user(),
+                'id' => $id
+            ]
+        );
+    }
+
     private function anyOrderCollisions(int $notaryId, string $dateTime): bool
     {
         return Order::query()

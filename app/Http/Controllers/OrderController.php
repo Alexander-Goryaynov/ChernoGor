@@ -32,4 +32,9 @@ class OrderController extends Controller
     {
         $this->oService->cancelOrder($id);
     }
+
+    public function finish(int $id)
+    {
+        $this->oService->finishOrder($id);
+    }
 }
