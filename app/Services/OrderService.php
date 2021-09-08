@@ -7,6 +7,7 @@ namespace App\Services;
 use App\BindingModels\OrderBindingModel;
 use App\Enums\OrderStatus;
 use App\Exceptions\OrdersCollisionException;
+use App\Exceptions\WrongOrderStatusException;
 use App\Interfaces\IOrderService;
 use App\Models\Notary;
 use App\Models\Order;
@@ -50,6 +51,28 @@ class OrderService implements IOrderService
                 // TODO заменить null на реального пользователя
                 'user' => null, //request()->user(),
                 'newData' => $model
+            ]
+        );
+    }
+
+    public function cancelOrder(int $id): void
+    {
+        /**@var Order $order*/
+        $order = Order::query()->findOrFail($id);
+        if ($order->status !== OrderStatus::PROCESSING()->getValue()) {
+            throw new WrongOrderStatusException(
+                OrderStatus::from($order->status),
+                OrderStatus::CANCELED()
+            );
+        }
+        $order->status = OrderStatus::CANCELED();
+        $order->save();
+        Log::info(
+            "Canceled order",
+            [
+                'ip' => request()->ip(),
+                'user' => request()->user(),
+                'id' => $id
             ]
         );
     }

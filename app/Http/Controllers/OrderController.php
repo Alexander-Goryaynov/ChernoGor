@@ -27,4 +27,9 @@ class OrderController extends Controller
         ));
         return response('', 201);
     }
+
+    public function cancel(int $id)
+    {
+        $this->oService->cancelOrder($id);
+    }
 }

@@ -40,5 +40,6 @@ Route::prefix('/v1')->group(function() {
     Route::put('/account', [UserController::class, 'update']);
     Route::prefix('/orders')->group(function() {
         Route::post('/', [OrderController::class, 'store']);
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
     });
 });
