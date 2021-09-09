@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// TODO прикрепить middleware к маршрутам
 
 Route::prefix('/v1')->group(function() {
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -42,5 +43,6 @@ Route::prefix('/v1')->group(function() {
         Route::post('/', [OrderController::class, 'store']);
         Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
         Route::post('/{id}/finish', [OrderController::class, 'finish']);
+        Route::get('/', [OrderController::class, 'index']);
     });
 });

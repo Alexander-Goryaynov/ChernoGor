@@ -6,12 +6,16 @@ namespace App\Services;
 
 use App\BindingModels\OrderBindingModel;
 use App\Enums\OrderStatus;
+use App\Enums\Role;
 use App\Exceptions\OrdersCollisionException;
 use App\Exceptions\WrongOrderStatusException;
 use App\Interfaces\IOrderService;
 use App\Models\Notary;
 use App\Models\Order;
 use App\Models\Subcategory;
+use App\Models\User;
+use App\ViewModels\OrdersViewModel;
+use App\ViewModels\OrderViewModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +24,7 @@ class OrderService implements IOrderService
     public function createOrder(OrderBindingModel $model): void
     {
         $consultationDatetime = "{$model->consultationDate} {$model->consultationTime}";
-        $carbon = Carbon::createFromLocaleIsoFormat('DD MMMM Y HH:mm', 'ru_RU', $consultationDatetime);
+        $carbon = Carbon::createFromLocaleIsoFormat('DD MMM Y HH:mm', 'ru_RU', $consultationDatetime);
         // Array for storing frozen values of related models (snapshot at the moment of order creation)
         $description = [];
         /** @var Subcategory $subcategory */
@@ -97,6 +101,40 @@ class OrderService implements IOrderService
                 'id' => $id
             ]
         );
+    }
+
+    public function getOrdersList(?string $sortingColumn = null, ?string $sortingDirection = null): OrdersViewModel
+    {
+        $orders = Order::all();
+        // TODO раскомментировать фильтрацию заказов для юзера
+        /*if (request()->user()->role == Role::USER()->getValue()) {
+            $orders = $orders->filter(fn (Order $o) => $o->user->id == request()->user()->id);
+        }*/
+        if (isset($sortingColumn) && isset($sortingDirection)) {
+            $isDescending = ($sortingDirection == 'desc');
+            $orders = $orders->sortBy($sortingColumn, SORT_REGULAR, $isDescending);
+        }
+        $result = new OrdersViewModel();
+        foreach ($orders as $order) {
+            $description = json_decode((string)$order->description, true);
+            $orderView = new OrderViewModel(
+                $order->id,
+                $description['subcategory_name'],
+                $description['notary_fio'],
+                $description['address'],
+                Carbon::createFromTimeString($order->consultation_datetime)->isoFormat('D MMM Y H:mm'),
+                $order->price,
+                $order->status
+            );
+            // TODO раскомментировать добавление информации для админа
+            /*if (request()->user()->role == Role::ADMIN()->getValue()) {
+                $orderView->created_at = Carbon::createFromTimeString($order->created_at)
+                    ->isoFormat('D MMM Y H:mm');
+                $orderView->user_email = $order->user->email;
+            }*/
+            $result->orders[] = $orderView;
+        }
+        return $result;
     }
 
     private function anyOrderCollisions(int $notaryId, string $dateTime): bool

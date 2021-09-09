@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserValidator
 {
-    public static function validate(Request $request)
+    public static function validate(Request $request): void
     {
         $validator = Validator::make(
             $request->all(),

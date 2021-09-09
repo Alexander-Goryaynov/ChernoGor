@@ -6,6 +6,7 @@ use App\BindingModels\OrderBindingModel;
 use App\Interfaces\IOrderService;
 use App\Validators\OrderValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -18,7 +19,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        OrderValidator::validate($request);
+        OrderValidator::validateNewOrder($request);
         $this->oService->createOrder(new OrderBindingModel(
             $request->input('notary_id'),
             $request->input('subcategory_id'),
@@ -36,5 +37,16 @@ class OrderController extends Controller
     public function finish(int $id)
     {
         $this->oService->finishOrder($id);
+    }
+
+    public function index(Request $request)
+    {
+        OrderValidator::validateOrderListQuery($request);
+        if ($request->has('sort')) {
+            [$column, $direction] = Str::of($request->query('sort'))->explode(':');
+            return response()->json($this->oService->getOrdersList($column, $direction));
+        } else {
+            return response()->json($this->oService->getOrdersList());
+        }
     }
 }

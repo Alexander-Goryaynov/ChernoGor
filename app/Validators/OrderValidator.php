@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderValidator
 {
-    public static function validate(Request $request)
+    public static function validateNewOrder(Request $request): void
     {
         $validator = Validator::make(
             $request->all(),
@@ -26,6 +26,32 @@ class OrderValidator
         if ($validator->fails()) {
             Log::warning(
                 "Order data validation failed",
+                [
+                    'request' => [
+                        'ip' => $request->ip(),
+                        'user' => $request->user(),
+                        'data' => $request->all()
+                    ],
+                    'failed rules' => $validator->errors()
+                ]
+            );
+            Response::json($validator->errors(), 422)->send();
+            exit();
+        }
+    }
+
+    public static function validateOrderListQuery(Request $request): void
+    {
+        $sortingTypeRegex = '/^(status|consultation_datetime|price):(asc|desc)$/';
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'sort' => ['sometimes', 'string', "regex:$sortingTypeRegex"]
+            ]
+        );
+        if ($validator->fails()) {
+            Log::warning(
+                "Order list query validation failed",
                 [
                     'request' => [
                         'ip' => $request->ip(),
