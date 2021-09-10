@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property array $description
+ * @property string $description
  * @property float $price
  * @property string $status
  * @property string $consultation_datetime

@@ -116,8 +116,7 @@ class OrderService implements IOrderService
         }
         $result = new OrdersViewModel();
         foreach ($orders as $order) {
-            // FIXME изменить тип description на string, убрать каст
-            $description = json_decode((string)$order->description, true);
+            $description = json_decode($order->description, true);
             $orderView = new OrderViewModel(
                 $order->id,
                 $description['subcategory_name'],

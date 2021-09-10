@@ -19,8 +19,7 @@ class ScheduleService implements IScheduleService
     {
         /**@var Notary $notary */
         $notary = Notary::query()->findOrFail($notaryId);
-        // FIXME изменить тип schedule на string, убрать каст
-        $schedule = json_decode((string)$notary->schedule, true);
+        $schedule = json_decode($notary->schedule, true);
         // 2D-Array for grouping results by date
         $result = [];
         $dateTime = Carbon::now()->startOfHour();
