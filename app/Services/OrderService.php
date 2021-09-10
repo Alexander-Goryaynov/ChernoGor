@@ -139,12 +139,12 @@ class OrderService implements IOrderService
 
     private function anyOrderCollisions(int $notaryId, string $dateTime): bool
     {
-        // FIXME добавить фильтр по статусу (только "processing")
         return Order::query()
                 ->get()
                 ->filter(
-                    fn(Order $o) => $o->notary_id == $notaryId &&
-                        $o->consultation_datetime == $dateTime
+                    fn(Order $o) => $o->notary->id == $notaryId &&
+                        $o->consultation_datetime == $dateTime &&
+                        $o->status == OrderStatus::PROCESSING()->getValue()
                 )->count() != 0;
     }
 }
