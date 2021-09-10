@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NotaryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QualificationController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -45,4 +46,5 @@ Route::prefix('/v1')->group(function() {
         Route::post('/{id}/finish', [OrderController::class, 'finish']);
         Route::get('/', [OrderController::class, 'index']);
     });
+    Route::get('/schedule/select', [ScheduleController::class, 'select']);
 });

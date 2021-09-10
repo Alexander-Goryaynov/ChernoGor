@@ -116,6 +116,7 @@ class OrderService implements IOrderService
         }
         $result = new OrdersViewModel();
         foreach ($orders as $order) {
+            // FIXME изменить тип description на string, убрать каст
             $description = json_decode((string)$order->description, true);
             $orderView = new OrderViewModel(
                 $order->id,
@@ -139,6 +140,7 @@ class OrderService implements IOrderService
 
     private function anyOrderCollisions(int $notaryId, string $dateTime): bool
     {
+        // FIXME добавить фильтр по статусу (только "processing")
         return Order::query()
                 ->get()
                 ->filter(
