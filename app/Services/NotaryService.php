@@ -6,15 +6,20 @@ namespace App\Services;
 
 use App\BindingModels\NotaryBindingModel;
 use App\Enums\HourState;
+use App\Enums\OrderStatus;
 use App\Helpers\ImageHelper;
 use App\Interfaces\INotaryService;
 use App\Models\Notary;
+use App\Models\Order;
 use App\Models\Qualification;
 use App\Settings\Photo;
+use App\Settings\Schedule;
 use App\ViewModels\NotariesSelectViewModel;
 use App\ViewModels\NotariesViewModel;
+use App\ViewModels\NotaryEditorViewModel;
 use App\ViewModels\NotarySelectViewModel;
 use App\ViewModels\NotaryViewModel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -91,10 +96,28 @@ class NotaryService implements INotaryService
         return $result;
     }
 
+    public function getNotaryForEditing(int $id): NotaryEditorViewModel
+    {
+        /**@var Notary $notary */
+        $notary = Notary::query()->findOrFail($id);
+        $schedule = $this->addScheduleForceRestrictions(
+            json_decode($notary->schedule, true),
+            $id
+        );
+        return new NotaryEditorViewModel(
+            $notary->fio,
+            $notary->description,
+            ImageHelper::loadFromDisk($notary->photo_path),
+            $notary->office_address,
+            $notary->qualification->id,
+            $schedule
+        );
+    }
+
     public function updateNotary(int $id, NotaryBindingModel $model): void
     {
         $this->removeScheduleForceRestrictions($model->schedule);
-        /**@var Notary $notary*/
+        /** @var Notary $notary */
         $notary = Notary::query()->findOrFail($id);
         $notary->fio = $model->fio;
         $notary->description = $model->description;
@@ -142,5 +165,29 @@ class NotaryService implements INotaryService
             unset($hourState);
         }
         unset($day);
+    }
+
+    /**
+     * Marks as non-editable all occupied hours of schedule
+     * @param int[][] $schedule
+     * @return int[][]
+     */
+    private function addScheduleForceRestrictions(array $schedule, int $notaryId): array
+    {
+        /**@var Order[] $orders*/
+        $orders = Order::query()
+            ->get()
+            ->filter(
+                fn(Order $o) => $o->consultation_datetime >= Carbon::now() &&
+                    $o->notary->id == $notaryId &&
+                    $o->status == OrderStatus::PROCESSING()->getValue()
+            );
+        foreach ($orders as $order) {
+            $crb = Carbon::createFromTimeString($order->consultation_datetime);
+            $dayOfWeek = $crb->dayOfWeekIso;
+            $hour = $crb->hour;
+            $schedule[$dayOfWeek - 1][$hour - Schedule::MIN_HOUR] = HourState::FORCE_ACTIVE();
+        }
+        return $schedule;
     }
 }
