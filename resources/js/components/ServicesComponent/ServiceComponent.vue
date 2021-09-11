@@ -17,12 +17,20 @@
                 <div class="row" id="tabs">
                     <div class="col-md-4">
                         <div v-if="categories">
+                            <div v-if="isAdmin">
+                                <button name="create" id="create"
+                                        class="action-button float-right mb-3"
+                                        @click="createCategory()">Создать категорию <i class="fas fa-plus-circle"></i>
+                                </button>
+                            </div>
                             <ul v-for="cat in categories" :key="cat.id + 'cat'">
                                 <li>
-                                    <button v-if="isAdmin && !subcategoriesCount(cat.id)" class="action-button float-right"
-                                            @click="">Удалить <i class="fas fa-trash-alt"></i>
+                                    <button v-if="isAdmin"
+                                            class="action-button float-right"
+                                            @click="deleteCat(cat.id)">Удалить <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <button v-if="isAdmin" class="action-button float-right mb-1 mr-1" @click="edit(cat.id)">
+                                    <button v-if="isAdmin" class="action-button float-right mb-1 mr-1"
+                                            @click="edit(cat.id)">
                                         Изменить <i class="far fa-edit"></i>
                                     </button>
                                     <a :id="cat.id" href="#" :class="['mb-1', {'text-white': active === cat.id}]"
@@ -42,16 +50,25 @@
                                     информации о каждой категории и подкатегории советуем использовать источник: <a
                                     href="https://notariat.ru/sovet/">https://notariat.ru/sovet/</a>
                                 </p>
-                                <h4 v-if="active !== null">{{ categories[active].name }}</h4>
-                                <h4 v-else>Пожалуйста, выберите категорию</h4>
+                                <div v-if="active !== null">
+                                    <h4>{{ this.categories.find(x => x.id === active).name }}</h4>
+                                    <button v-if="isAdmin" class="action-button float-right mb-1 mr-1"
+                                            @click="createSub(active)">
+                                        Создать подкатегорию <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div v-else>
+                                    <h4>Пожалуйста, выберите категорию</h4>
+                                </div>
                                 <hr>
-                                <div v-if="subcategories">
+                                <div v-if="subcategories" class="mt-5">
                                     <ul v-for="sub in subcategories" :key="sub.id + 'sub'">
                                         <button v-if="isAdmin" class="action-button float-right"
-                                                @click="">Удалить <i class="fas fa-trash-alt"></i>
+                                                @click="deleteSub(sub.id)">Удалить <i class="fas fa-trash-alt"></i>
                                         </button>
                                         <button v-if="isAdmin"
-                                                class="action-button float-right mb-1 mr-1" @click="editSub(sub.id, sub.name, sub.price)">
+                                                class="action-button float-right mb-1 mr-1"
+                                                @click="editSub(sub.id, sub.name, sub.price)">
                                             Изменить <i class="far fa-edit"></i>
                                         </button>
                                         <li><a class="text-white mb-2">{{ sub.name }}</a>
@@ -71,106 +88,28 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
     data() {
-        let categories = [
-            {
-                id: 0,
-                name: 'Удостоверение сделок',
-                subcategories: [{
-                    id: 0,
-                    name: 'Доверенности',
-                    price: 5000
-                }, {
-                    id: 1,
-                    name: 'Брачный договор',
-                    price: 5000
-                }, {
-                    id: 2,
-                    name: 'Договор о купле-продаже недвижимости',
-                    price: 5000
-                }, {
-                    id: 3,
-                    name: 'Проверка подлинности подписи',
-                    price: 5000
-                }, {
-                    id: 4,
-                    name: 'Договор о разделе совместного имущества',
-                    price: 5000
-                }
-                ]
-            },
-            {
-                id: 1,
-                name: 'Консультация',
-                subcategories: [{
-                    id: 5,
-                    name: 'Доверенности 1',
-                    price: 5000
-                }, {
-                    id: 6,
-                    name: 'Брачный договор 1',
-                    price: 5000
-                }, {
-                    id: 7,
-                    name: 'Договор о купле-продаже недвижимости 1',
-                    price: 5000
-                }, {
-                    id: 8,
-                    name: 'Проверка подлинности подписи',
-                    price: 5000
-                }, {
-                    id: 9,
-                    name: 'Договор о разделе совместного имущества',
-                    price: 5000
-                }]
-            },
-            {
 
-                id: 2,
-                name: 'Выдача доверенностей',
-                subcategories: [{
-                    id: 10,
-                    name: 'Доверенности 2',
-                    price: 5000
-                }, {
-                    id: 11,
-                    name: 'Брачный договор 2',
-                    price: 5000
-                }, {
-                    id: 12,
-                    name: 'Договор о купле-продаже недвижимости 2',
-                    price: 5000
-                }, {
-                    id: 13,
-                    name: 'Проверка подлинности подписи',
-                    price: 5000
-                }, {
-                    id: 14,
-                    name: 'Договор о разделе совместного имущества',
-                    price: 5000
-                }]
-            },
-            {
-                id: 3,
-                name: 'Удостоверение сделок 3',
-                subcategories: []
-            }
-        ];
+        let categories = [];
         return {
             categories,
             active: null,
             subcategories: null,
             isAdmin: true,
+            status: ''
         }
     },
     methods: {
         show(index) {
             this.active = index
-            this.subcategories = this.categories[index].subcategories;
-        },
-        subcategoriesCount(index) {
-            return !!this.categories[index].subcategories.length;
+            if (this.categories.find(x => x.id === index).subcategories.length !== 0) {
+                this.subcategories = this.categories.find(x => x.id === index).subcategories;
+            } else {
+                this.subcategories = null;
+            }
         },
         edit(index) {
             this.$router.push('/categories/' + index);
@@ -185,7 +124,88 @@ export default {
                     category_id: this.active
                 }
             })
+        },
+        createSub(index) {
+            this.$router.push({
+                name: 'subcategories-create',
+                params: {
+                    cat_id: parseInt(index)
+                }
+            })
+        },
+        deleteSub(index) {
+            axios.delete('/api/v1/subcategories/' + index).then(response => {
+                axios.get('/api/v1/services/tree').then(response => {
+                    this.categories = response.data.categories;
+                    this.show(this.active);
+                    Swal.fire({
+                        title: 'Успех',
+                        text: 'Категория удалена успешно',
+                        icon: 'success',
+                        confirmButtonText: 'Ок'
+                    });
+                });
+            }).catch(function (error) {
+                if (error.response) {
+                    Swal.fire({
+                        title: 'Ошибка',
+                        text: 'Невозможно удалить подкатегорию',
+                        icon: 'error',
+                        confirmButtonText: 'Ок'
+                    });
+                }
+            });
+        },
+        createCategory() {
+            this.$router.push({name: 'categories-create'})
+        },
+        deleteCat(index) {
+            let subcats = this.categories.find(x => x.id === index).subcategories;
+            if (subcats.length !== 0) {
+                Swal.fire({
+                    title: 'Ошибка',
+                    text: 'В категории не должно быть подкатегорий',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                });
+            } else {
+                axios.delete('/api/v1/categories/' + index).then(response => {
+                    let num = this.categories.findIndex(function (item, i) {
+                        return item.id === index
+                    });
+                    let removed = this.categories.splice(num, 1);
+                    //удаление
+                    Swal.fire({
+                        title: 'Успех',
+                        text: 'Категория удалена успешно',
+                        icon: 'success',
+                        confirmButtonText: 'Ок'
+                    });
+                }).catch(function (error) {
+                    if (error.response) {
+                        Swal.fire({
+                            title: 'Ошибка',
+                            text: 'Невозможно удалить категорию',
+                            icon: 'error',
+                            confirmButtonText: 'Ок'
+                        });
+                    }
+                });
+            }
         }
+    }, created() {
+        axios.get('/api/v1/services/tree').then(response => {
+            this.categories = response.data.categories;
+        }).catch(function (error) {
+            if (error.response) {
+                Swal.fire({
+                    title: 'Ошибка',
+                    text: 'Невозможно загрузить категории',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                });
+            }
+        });
     },
     name: "ServiceComponent",
     mounted() {

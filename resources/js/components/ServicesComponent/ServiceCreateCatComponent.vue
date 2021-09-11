@@ -21,7 +21,7 @@
                                     </button>
                                 </div>
                                 <div class="col-lg-8 col-md-8 col-sm-8">
-                                    <h2 class="float-left">Изменение категории</h2>
+                                    <h2 class="float-left">Создание категории</h2>
                                 </div>
                             </div>
                         </div>
@@ -31,14 +31,17 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12">
                                             <fieldset>
-                                                <input name="name" type="text" v-model="new_name" class="form-control"
+                                                <label for="name" class="text-white h4 float-left mb-2">
+                                                    Название категории:
+                                                </label>
+                                                <input name="name" type="text" v-model="category.name" class="form-control"
                                                        id="name">
                                             </fieldset>
                                         </div>
                                         <div class="col-lg-12">
                                             <fieldset>
                                                 <button type="submit" id="form-submit" @click.prevent="check()"
-                                                        class="border-button">Изменить категорию
+                                                        class="border-button">Создать
                                                 </button>
                                             </fieldset>
                                         </div>
@@ -65,40 +68,27 @@ export default {
         };
         return {
             category,
-            new_name: '',
             error_message: ''
         }
-    },
-    created() {
-        const catId = this.$route.params.id;
-        axios.get('/api/v1/categories/' + catId + '/edit').then(response => {
-            this.category = {
-                id: catId,
-                name: response.data.name
-            }
-            this.new_name = this.category.name;
-        });
     },
     name: "ServiceItemComponent",
     methods: {
         check() {
-            if (!this.new_name) {
+            if (!this.category.name) {
                 Swal.fire({
                     title: 'Ошибка',
                     text: 'Заполните поле',
                     icon: 'error',
                     confirmButtonText: 'Ок'
                 });
-            } else {
-                this.new_name = this.new_name.trim();
-                if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.new_name))) {
+            }
+            else {
+                this.category.name = this.category.name.trim();
+                if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.category.name))) {
                     this.error_message += "Категория должна содержать только буквы. \n";
                 }
-                if ((this.new_name.length) < 3 || (this.new_name.length) > 30) {
+                if ((this.category.name.length) < 3 || (this.category.name.length) > 30) {
                     this.error_message += "Категория должна содержать более 5 и менее 30 символов. \n";
-                }
-                if (this.new_name === this.category.name) {
-                    this.error_message += "Название должно отличаться \n";
                 }
                 if (this.error_message) {
                     Swal.fire({
@@ -108,11 +98,12 @@ export default {
                         confirmButtonText: 'Ок'
                     })
                     this.error_message = '';
-                } else {
-                    axios.put('/api/v1/categories/' + this.$route.params.id, {"name": this.new_name}).then(response => {
+                }
+                else {
+                    axios.post('/api/v1/categories', { "name": this.category.name }).then(response => {
                         Swal.fire({
                             title: 'Успех',
-                            text: 'Категория изменена успешно',
+                            text: 'Категория создана успешно',
                             icon: 'success',
                             confirmButtonText: 'Ок'
                         });

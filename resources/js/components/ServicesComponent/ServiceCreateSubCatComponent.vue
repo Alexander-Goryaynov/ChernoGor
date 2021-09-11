@@ -21,7 +21,7 @@
                                     </button>
                                 </div>
                                 <div class="col-lg-8 col-md-8 col-sm-8">
-                                    <h2 class="float-left">Изменение подкатегории</h2>
+                                    <h2 class="float-left">Создание подкатегории</h2>
                                 </div>
                             </div>
                         </div>
@@ -34,26 +34,26 @@
                                                 <select class="form-control rounded-select"
                                                         name="catName"
                                                         id="catName"
-                                                        v-model="new_category">
-                                                        <option v-for="item in categories" :selected="category_id === item.id" :value="item.id">{{ item.name }}
-                                                        </option>
+                                                        v-model="subcategory.category_id">
+                                                    <option v-for="item in categories" :selected="subcategory.category_id === item.id" :value="item.id">{{ item.name }}
+                                                    </option>
                                                 </select>
                                             </fieldset>
                                             <fieldset>
-                                                <input name="name" type="text" v-model="new_name" class="form-control"
-                                                       id="name">
+                                                <input name="name" type="text" v-model="subcategory.name" class="form-control"
+                                                       id="name" placeholder="Название категории">
                                             </fieldset>
                                         </div>
                                         <div class="col-lg-12 col-md-12 col-sm-12">
                                             <fieldset>
-                                                <input name="price" type="number" v-model="new_price" class="form-control"
+                                                <input name="price" type="number" v-model="subcategory.price" class="form-control"
                                                        id="price">
                                             </fieldset>
                                         </div>
                                         <div class="col-lg-12">
                                             <fieldset>
-                                                <button type="submit" id="form-submit" :disabled="check"
-                                                        @click.prevent="changeSubCategory()"
+                                                <button type="submit" id="form-submit"
+                                                        @click.prevent="check()"
                                                         class="border-button">Изменить подкатегорию
                                                 </button>
                                             </fieldset>
@@ -73,78 +73,21 @@
 import Swal from 'sweetalert2'
 
 export default {
-    props: {
-        id: Number,
-        name: String,
-        price: Number,
-        category_id: Number
-    },
+    props: ['cat_id'],
     data() {
         let subcategory = {
             id: '',
             name: '',
-            price: ''
+            price: 0,
+            category_id: this.cat_id
         };
         return {
             subcategory,
-            new_name: '',
-            new_price: '',
-            new_category: '',
             categories: [],
             error_message: ''
         }
     },
-    methods: {
-        changeSubCategory() {
-            this.new_name = this.new_name.trim();
-            if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.new_name))) {
-                this.error_message += "Подкатегория должна содержать только буквы. \n";
-            }
-            if ((this.new_name.length) < 3 || (this.new_name.length) > 30) {
-                this.error_message += "Подкатегория должна содержать более 5 и менее 30 символов. \n";
-            }
-            if (this.new_price < 500) {
-                this.error_message += "Минимальная стоимость услуг - 500 рублей \n";
-            }
-            if (this.error_message) {
-                Swal.fire({
-                    title: 'Ошибка',
-                    text: this.error_message,
-                    icon: 'error',
-                    confirmButtonText: 'Ок'
-                })
-                this.error_message = '';
-            } else {
-                axios.put('/api/v1/subcategories/' + this.$route.params.id,
-                    {
-                        "name": this.new_name,
-                        "price": this.new_price,
-                        "category_id": this.new_category
-                    }).then(response => {
-                    Swal.fire({
-                        title: 'Успех',
-                        text: 'Категория изменена успешно',
-                        icon: 'success',
-                        confirmButtonText: 'Ок'
-                    });
-                    this.$router.push('/categories')
-                }).catch(function (error) {
-                    if (error.response) {
-                        Swal.fire({
-                            title: 'Ошибка',
-                            text: 'Невозможно создать категорию',
-                            icon: 'error',
-                            confirmButtonText: 'Ок'
-                        });
-                    }
-                });
-            }
-        }
-    },
     created() {
-        this.new_name = this.name;
-        this.new_price = this.price;
-        this.new_category =  this.category_id
         axios.get('/api/v1/categories/select').then(response => {
             this.categories = response.data.categories;
         }).catch(function (error) {
@@ -159,32 +102,78 @@ export default {
         });
     },
     name: "ServiceItemComponent",
-    computed: {
+    methods: {
         check() {
-            const sub_cat_id = (this.new_category === this.category_id) || (this.new_category === null);
-            if (!sub_cat_id && this.new_name !== '' && this.new_price !== null) {
-                return false
+            if (!this.subcategory.name) {
+                Swal.fire({
+                    title: 'Ошибка',
+                    text: 'Заполните поле',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                });
             }
             else {
-                const sub_name = (this.name === this.new_name) || (this.new_name === '');
-                const sub_price = (this.price === this.new_price) || (this.new_price < 0);
-                return (sub_name && sub_price);
+                this.subcategory.name = this.subcategory.name.trim();
+                if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.subcategory.name))) {
+                    this.error_message += "Подкатегория должна содержать только буквы. \n";
+                }
+                if (!this.subcategory.category_id) {
+                    this.error_message += "Выбрите категорию \n";
+                }
+                if (this.subcategory.price < 500) {
+                    this.error_message += "Минимальная стоимость услуг - 500 рублей \n";
+                }
+                if ((this.subcategory.name.length) < 3 || (this.subcategory.name.length) > 30) {
+                    this.error_message += "Подкатегория должна содержать более 5 и менее 30 символов. \n";
+                }
+                if (this.error_message) {
+                    Swal.fire({
+                        title: 'Ошибка',
+                        text: this.error_message,
+                        icon: 'error',
+                        confirmButtonText: 'Ок'
+                    })
+                    this.error_message = '';
+                }
+                else {
+                    axios.post('/api/v1/subcategories', {
+                        "name": this.subcategory.name,
+                        "price": this.subcategory.price,
+                        "category_id": this.subcategory.category_id
+                    }).then(response => {
+                        Swal.fire({
+                            title: 'Успех',
+                            text: 'Подкатегория создана успешно',
+                            icon: 'success',
+                            confirmButtonText: 'Ок'
+                        });
+                        this.$router.push('/categories')
+                    }).catch(function (error) {
+                        if (error.response) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Невозможно создать категорию',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            });
+                        }
+                    });
+                }
             }
         }
     },
     mounted() {
         window.scrollTo(0, 0);
-        if (!this.name || !this.price || this.category_id === null) {
+        /*if (!this.subcategory.name || !this.subcategory.price || this.subcategory.category_id <= 0) {
             Swal.fire({
                 title: 'Ошибка',
                 text: 'Сначала выберите категорию',
                 icon: 'error',
                 timer: 1000,
             }).then((result) => {
-                this.$router.push('/categories');
-            });
+                this.$router.push('/categories/');
+            });*/
         }
-    }
 }
 </script>
 

@@ -16,6 +16,8 @@ import AdminOrdersComponent from "./components/AccountComponents/Admin/AdminOrde
 import AdminUsersComponent from "./components/AccountComponents/Admin/AdminUsersComponent";
 import UserDataComponent from "./components/AccountComponents/User/UserDataComponent";
 import UserOrdersComponent from "./components/AccountComponents/User/UserOrdersComponent";
+import ServiceCreateCatComponent from "./components/ServicesComponent/ServiceCreateCatComponent";
+import ServiceCreateSubCatComponent from "./components/ServicesComponent/ServiceCreateSubCatComponent";
 const routes = [
     {
         path: "/",
@@ -28,45 +30,46 @@ const routes = [
         name: "categories",
     },
     {
+        path: "/categories/create",
+        component: ServiceCreateCatComponent,
+        name: "categories-create", //admin
+    },
+    {
+        path: "/subcategories/create",
+        component: ServiceCreateSubCatComponent,
+        name: "subcategories-create", //admin
+        props: true
+    },
+    {
         path: "/create-order",
         component: CreateOrderComponent,
-        name: "create-order",
+        name: "create-order", //user
     },
     {
         path: "/register",
         component: RegisterComponent,
-        name: "register",
+        name: "register", //guest
     },
     {
         path: "/login",
         component: LoginComponent,
-        name: "login",
-    },
-    {
-        path: "/second",
-        component: ExampleSecondComponent,
-        name: "home2",
-    },
-    {
-        path: "/test",
-        component: TestComponent,
-        name: "test",
+        name: "login", //guest
     },
     {
         path: "/categories/:id",
         component: ServiceItemComponent,
-        name: "categories-item",
+        name: "categories-item", //admin
     },
     {
         path: "/subcategories/:id",
         component: ServiceSubItemComponent,
-        name: "subcategories-item",
+        name: "subcategories-item", //admin
         props: true
     },
     {
         path: "/notaries/:id",
         component: NotaryCardEditComponent,
-        name: "notaries-item",
+        name: "notaries-item", //admin
     },
     {
         path: "/notaries",
@@ -76,22 +79,22 @@ const routes = [
     {
         path: "/admin/orders",
         component: AdminOrdersComponent,
-        name: "admin-orders",
+        name: "admin-orders", //admin
     },
     {
         path: "/admin/accounts",
         component: AdminUsersComponent,
-        name: "admin-accounts",
+        name: "admin-accounts", //admin
     },
     {
         path: "/account",
         component: UserDataComponent,
-        name: "user-account",
+        name: "user-account", //user
     },
     {
         path: "/account/orders",
         component: UserOrdersComponent,
-        name: "user-account-orders",
+        name: "user-account-orders", //user
     },
 
 ];
