@@ -41,7 +41,7 @@
                                             </fieldset>
                                             <fieldset>
                                                 <input name="name" type="text" v-model="subcategory.name" class="form-control"
-                                                       id="name" placeholder="Название категории">
+                                                       id="name" placeholder="Название подкатегории">
                                             </fieldset>
                                         </div>
                                         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -54,7 +54,7 @@
                                             <fieldset>
                                                 <button type="submit" id="form-submit"
                                                         @click.prevent="check()"
-                                                        class="border-button">Изменить подкатегорию
+                                                        class="border-button">Сохранить
                                                 </button>
                                             </fieldset>
                                         </div>
