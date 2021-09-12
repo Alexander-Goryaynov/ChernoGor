@@ -111,7 +111,7 @@ class OrderService implements IOrderService
         /*if (request()->user()->role == Role::USER()->getValue()) {
             $orders = $orders->filter(fn (Order $o) => $o->user->id == request()->user()->id);
         }*/
-        if (isset($sortingColumn) && isset($sortingDirection)) {
+        if (isset($sortingColumn, $sortingDirection)) {
             $isDescending = ($sortingDirection == 'desc');
             $orders = $orders->sortBy($sortingColumn, SORT_REGULAR, $isDescending);
         }

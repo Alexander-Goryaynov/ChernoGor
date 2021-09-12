@@ -71,7 +71,7 @@ class UserService implements IUserService
             );
         }
         // Sorting
-        if (isset($sortingColumn) && isset($sortingDirection)) {
+        if (isset($sortingColumn, $sortingDirection)) {
             $isDescending = ($sortingDirection == 'desc');
             if ($sortingColumn == 'last_ordered_at') {
                 $result->accounts = collect($result->accounts)
