@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -17,6 +18,17 @@ class UserController extends Controller
     public function __construct(IUserService $uService)
     {
         $this->uService = $uService;
+    }
+
+    public function index(Request $request)
+    {
+        UserValidator::validateUsersListQuery($request);
+        if ($request->has('sort')) {
+            [$column, $direction] = Str::of($request->query('sort'))->explode(':');
+            return response()->json($this->uService->getUsersList($column, $direction));
+        } else {
+            return response()->json($this->uService->getUsersList());
+        }
     }
 
     public function update(Request $request)

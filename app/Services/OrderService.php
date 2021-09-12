@@ -24,6 +24,7 @@ class OrderService implements IOrderService
     public function createOrder(OrderBindingModel $model): void
     {
         $consultationDatetime = "{$model->consultationDate} {$model->consultationTime}";
+        // TODO: локализацию получать из конфигов
         $carbon = Carbon::createFromLocaleIsoFormat('DD MMM Y HH:mm', 'ru_RU', $consultationDatetime);
         // Array for storing frozen values of related models (snapshot at the moment of order creation)
         $description = [];

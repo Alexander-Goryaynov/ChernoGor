@@ -48,4 +48,5 @@ Route::prefix('/v1')->group(function() {
         Route::get('/', [OrderController::class, 'index']);
     });
     Route::get('/schedule/select', [ScheduleController::class, 'select']);
+    Route::get('/accounts', [UserController::class, 'index']);
 });
