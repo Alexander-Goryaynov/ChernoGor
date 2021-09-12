@@ -99,12 +99,11 @@ class UserService implements IUserService
                 return -1;
             }
             // Models with orders are compared as usual by last order date
-            // TODO: локализацию получать из конфигов
             // Convert each model to Carbon instance of its last order datetime
             [$aCrb, $bCrb] = collect([$a, $b])->map(
                 fn(AccountViewModel $model) => Carbon::createFromLocaleIsoFormat(
                     'DD MMM Y HH:mm',
-                    'ru_RU',
+                    config('app.locale'),
                     // Retrieve only datetime without human description
                     Str::of($model->last_ordered_at)->explode(' (')[0]
                 )
