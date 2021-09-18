@@ -18,6 +18,7 @@ import UserDataComponent from "./components/AccountComponents/User/UserDataCompo
 import UserOrdersComponent from "./components/AccountComponents/User/UserOrdersComponent";
 import ServiceCreateCatComponent from "./components/ServicesComponent/ServiceCreateCatComponent";
 import ServiceCreateSubCatComponent from "./components/ServicesComponent/ServiceCreateSubCatComponent";
+import NotaryCardCreateComponent from "./components/NotaryComponents/NotaryCardCreateComponent";
 const routes = [
     {
         path: "/",
@@ -65,6 +66,11 @@ const routes = [
         component: ServiceSubItemComponent,
         name: "subcategories-item", //admin
         props: true
+    },
+    {
+        path: "/notaries/create",
+        component: NotaryCardCreateComponent,
+        name: "notaries-create", //admin
     },
     {
         path: "/notaries/:id",

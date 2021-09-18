@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="text-style">Редактирование нотариуса</h1>
+                        <h1 class="text-style">Создание нотариуса</h1>
                     </div>
                 </div>
             </div>
@@ -33,14 +33,14 @@
                                             <label for="fio" class="text-white h4 float-left mb-2">
                                                 ФИО нотариуса:
                                             </label>
-                                            <input name="fio" type="text" v-model="new_fio" class="form-control"
+                                            <input name="fio" type="text" v-model="notary.fio" class="form-control"
                                                    id="fio">
                                         </fieldset>
                                         <fieldset>
                                             <label for="description" class="text-white h4 float-left mb-2">
                                                 Описание:
                                             </label>
-                                            <input name="description" type="text" v-model="new_desc"
+                                            <input name="description" type="text" v-model="notary.description"
                                                    class="form-control"
                                                    id="description">
                                         </fieldset>
@@ -48,7 +48,7 @@
                                             <label for="address" class="text-white h4 float-left mb-2">
                                                 Адрес офиса:
                                             </label>
-                                            <input name="address" type="text" v-model="new_address" class="form-control"
+                                            <input name="address" type="text" v-model="notary.office_address" class="form-control"
                                                    id="address">
                                         </fieldset>
                                         <fieldset>
@@ -58,7 +58,8 @@
                                             <select class="form-control rounded-select"
                                                     name="qualification"
                                                     id="qualification"
-                                                    v-model="new_qualif">
+                                                    v-model="notary.qualification_id">
+                                                <option :value="0" disabled selected>Выберите квалификацию</option>
                                                 <option v-for="item in qualifications" :value="item.id">
                                                     {{ item.name }}
                                                 </option>
@@ -88,8 +89,8 @@
                                                             <td>
                                                                 <input type="checkbox"
                                                                        @change="changeData(index, ind-1, $event)"
-                                                                       :checked="new_schedule[index][ind-1] === 1 || new_schedule[index][ind-1] === -1"
-                                                                       :disabled="new_schedule[index][ind-1] === -1"/>
+                                                                       :checked="notary.schedule[index][ind-1] === 1 || notary.schedule[index][ind-1] === -1"
+                                                                       :disabled="notary.schedule[index][ind-1] === -1"/>
                                                             </td>
                                                         </template>
                                                     </tr>
@@ -99,7 +100,7 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <fieldset>
-                                            <button type="submit" id="form-submit" class="border-button mt-1" @click.prevent="submit()">Сохранить
+                                            <button type="submit" id="form-submit" class="border-button mt-1" @click.prevent="count()">Сохранить
                                             </button>
                                         </fieldset>
                                     </div>
@@ -118,28 +119,38 @@ import Swal from "sweetalert2";
 
 export default {
     data() {
-        let notary = [];
-        let qualifications = [
-        ];
+        let notary = {
+            fio: '',
+            qualification_id: 0,
+            office_address: '',
+            description: '',
+            schedule: [
+                // 6 строк (пн - сб), 12 столбцов (11:00 - 18:00)
+                // 1 - принимает, 0 - не принимает, -1 - вынужденный приём (есть запись)
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0]
+            ]
+        };
+        let qualifications = [];
         let days = 'ПН|ВТ|СР|ЧТ|ПТ|СБ'.split('|');
         let hours = [ '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
         return {
-            new_fio: '',
-            new_image: '',
-            new_qualif: null,
-            new_schedule: null,
-            new_address: '',
-            new_desc: '',
             notary,
+            remoteUrl: '',
             qualifications,
             days,
             hours,
-            error_message: ''
+            new_image: '',
+            array: []
         }
     },
     methods: {
-        submit() {
-            if (!this.new_fio || !this.new_image || !this.new_qualif || !this.new_address || !this.new_desc) {
+        count() {
+            if (!this.notary.fio || !this.new_image || !this.notary.qualification_id || !this.notary.office_address || !this.notary.description) {
                 Swal.fire({
                     title: 'Ошибка',
                     text: 'Заполните все поля',
@@ -147,28 +158,19 @@ export default {
                     confirmButtonText: 'Ок'
                 });
             }
-            else if (this.notary.fio === this.new_fio && this.notary.photo === this.new_image
-                && this.notary.description === this.new_desc && this.notary.office_address === this.new_address) {
-                    Swal.fire({
-                        title: 'Ошибка',
-                        text: 'Данные должны отличаться',
-                        icon: 'error',
-                        confirmButtonText: 'Ок'
-                    });
-            }
             else {
-                this.new_fio = this.new_fio.trim();
-                if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.new_fio))) {
+                this.notary.fio = this.notary.fio.trim();
+                if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.notary.fio))) {
                     this.error_message += "ФИО должно содержать только буквы. \n";
                 }
-                if ((this.new_fio.length) < 5 || (this.new_fio.length) > 50) {
+                if ((this.notary.fio.length) < 5 || (this.notary.fio.length) > 50) {
                     this.error_message += "ФИО должно содержать более 5 и менее 50 символов. \n";
                 }
-                if ((this.new_desc.length) < 10 || (this.new_desc.length) > 50) {
-                    this.error_message += "Описание должно содержать более 10 и менее 50 символов. \n";
-                }
-                if ((this.new_address.length) < 10 || (this.new_address.length) > 50) {
+                if ((this.notary.office_address.length) < 10 || (this.notary.office_address.length) > 50) {
                     this.error_message += "Адрес должен содержать более 10 и менее 50 символов. \n";
+                }
+                if ((this.notary.description.length) < 10 || (this.notary.description.length) > 50) {
+                    this.error_message += "Описание должно содержать более 10 и менее 50 символов. \n";
                 }
                 if (this.error_message) {
                     Swal.fire({
@@ -179,19 +181,17 @@ export default {
                     })
                     this.error_message = '';
                 } else {
-                    axios.put('/api/v1/notaries/' + this.$route.params.id,
-                        {
-                            "fio": this.new_fio,
-                            "description": this.new_desc,
-                            "photo": this.new_image,
-                            "office_address": this.new_address,
-                            "qualification_id": this.new_qualif,
-                            "schedule": this.new_schedule
-                        }).then(response => {
-                        console.log(this.new_schedule)
+                    axios.post('/api/v1/notaries', {
+                        "fio": this.notary.fio,
+                        "description": this.notary.description,
+                        "photo": this.new_image,
+                        "office_address": this.notary.office_address,
+                        "qualification_id": this.notary.qualification_id,
+                        "schedule": this.notary.schedule
+                    }).then(response => {
                         Swal.fire({
                             title: 'Успех',
-                            text: 'Нотариус изменен успешно',
+                            text: 'Нотариус создан успешно',
                             icon: 'success',
                             confirmButtonText: 'Ок'
                         });
@@ -200,7 +200,7 @@ export default {
                         if (error.response) {
                             Swal.fire({
                                 title: 'Ошибка',
-                                text: 'Невозможно изменить нотариуса',
+                                text: 'Невозможно создать нотариуса',
                                 icon: 'error',
                                 confirmButtonText: 'Ок'
                             });
@@ -216,6 +216,7 @@ export default {
         },
         createBase64Image(element) {
             let image = element.target.files[0];
+            //console.log(file);
             let reader = new FileReader();
             reader.readAsDataURL(image);
             reader.onload = e =>{
@@ -225,12 +226,11 @@ export default {
         },
         changeData(i, j, e) {
             if (e.target.checked) {
-                this.new_schedule[i][j] = 1;
+                this.notary.schedule[i][j] = 1;
             }
             else {
-                this.new_schedule[i][j] = 0;
+                this.notary.schedule[i][j] = 0;
             }
-            console.log(this.new_schedule);
         }
     },
     computed: {},
@@ -238,8 +238,6 @@ export default {
         window.scrollTo(0, 0)
     },
     created() {
-        const notaryId = this.$route.params.id;
-
         axios.get(`/api/v1/qualifications/select`).then(response => {
             this.qualifications = response.data.qualifications;
         }).catch(function (error) {
@@ -247,26 +245,6 @@ export default {
                 Swal.fire({
                     title: 'Ошибка',
                     text: 'Невозможно загрузить квалификации',
-                    icon: 'error',
-                    confirmButtonText: 'Ок'
-                });
-            }
-        });
-
-        axios.get(`/api/v1/notaries/${notaryId}/edit`, ).then(response => {
-            this.notary = response.data;
-            this.new_fio = response.data.fio;
-            this.new_image = response.data.photo;
-            this.new_desc = response.data.description;
-            this.new_address = response.data.office_address;
-            this.new_schedule = response.data.schedule;
-            this.new_qualif = response.data.qualification_id;
-            console.log(this.new_schedule);
-        }).catch(function (error) {
-            if (error.response) {
-                Swal.fire({
-                    title: 'Ошибка',
-                    text: 'Невозможно создать нотариуса',
                     icon: 'error',
                     confirmButtonText: 'Ок'
                 });

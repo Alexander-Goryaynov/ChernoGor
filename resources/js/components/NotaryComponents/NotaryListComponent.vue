@@ -33,30 +33,41 @@
                             </div>
                         </div>
                         <div class="row">
-                            <template v-for="index in 12">
+                            <template v-for="notary in notaries">
                                 <div class="col-12 col-md-6 col-lg-4 mb-3">
                                     <div class="card h-100 border-0 rounded">
                                         <div class="card-img-top">
                                             <div class="image-view">
-                                            <img src="https://via.placeholder.com/240x240/5fa9f8/efefef"
+                                            <img :src="notary.photo"
                                                  class="img-fluid mx-auto d-block rounded" alt="Card image cap">
                                             <h2 class="text-image-view">
                                                 <span v-if="visible" class="image-span">
-                                                    Первоклассный специалист. Чудесный собеседник.
+                                                    {{ notary.description }}
+                                                </span>
+                                                <span class="text-span">
+                                                    <button
+                                                        class="action-button float-right"
+                                                        @click="sweetAlert(notary.id)"><i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                    <button
+                                                        class="action-button float-right"
+                                                        @click="edit(notary.id)"><i class="fas fa-pen-alt"></i>
+                                                    </button>
                                                 </span>
                                             </h2>
                                             </div>
                                         </div>
                                         <div class="card-body text-center">
                                             <h4 class="card-title">
-                                                <router-link :to="{name: 'notaries-item', params: { id: index }}"
-                                                   class=" font-weight-bold text-dark small">Субботин Валерий Степанович</router-link>
+                                                <router-link :to="{name: 'notaries-item', params: { id: notary.id }}"
+                                                   class=" font-weight-bold text-dark small">{{ notary.fio }}</router-link>
                                                 <br>
-                                                <h6 class="mt-2">Ул. Водопроводная, 25А</h6>
+                                                <h6 class="mt-2">{{ notary.office_address }}</h6>
                                             </h4>
                                             <h5 class="card-price text-primary">
-                                                <h6 class="font-italic">Высшая квалификация</h6>
+                                                <h6 class="font-italic">{{ notary.qualification_name }}</h6>
                                             </h5>
+
                                         </div>
                                     </div>
                                 </div>
@@ -92,6 +103,7 @@
                             <h5>Наивысшая: цена услуги <span class="text-primary">* 1,5</span></h5></div>
                         </div>
                     <a href="#" class="btn btn-lg btn-block btn-primary mt-5" @click.prevent="showClue">{{message}}</a>
+                    <router-link :to="{name: 'notaries-create'}" class="btn btn-lg btn-block action-button mt-1" >Создать нотариуса</router-link>
                 </div>
             </div>
         </div>
@@ -99,31 +111,19 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
 
     data() {
-        let qualifications = [
-            {
-                id: 0,
-                name: 'Средняя квалификация',
-                coefficient: 1
-            },
-            {
-                id: 1,
-                name: 'Высшая квалификация',
-                coefficient: 1.25
-            },
-            {
-                id: 2,
-                name: 'Наивысшая квалификация',
-                coefficient: 1.5
-            }
-        ];
+        let qualifications = [ ];
+        let notaries = [];
         return {
             qualifications,
             show: false,
             message: 'Показать подсказку',
-            visible: false
+            visible: false,
+            notaries
         }
     },
     methods: {
@@ -138,8 +138,65 @@ export default {
             else {
                 this.message = 'Показать подсказку';
             }
+        },sweetAlert(index) {
+            Swal.fire({
+                title: 'Вы уверены?',
+                text: 'Вы не сможете восстановить нотариуса после удаления',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Да!',
+                cancelButtonText: 'Нет, пусть живет',
+                showCloseButton: true,
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if(result.value) {
+                    axios.delete('/api/v1/notaries/' + index).then(response => {
+                        axios.get('/api/v1/notaries').then(response => {
+                            this.notaries = response.data.notaries;
+                            Swal.fire('Удалено!', 'Ух-ты! Вы успешно удалили нотариуса', 'success')
+                        });
+                    }).catch(function (error) {
+                        if (error.response) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Невозможно удалить нотариуса по техническим причинам',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire('Хммм...', 'Вы не стали удалять нотариуса, он благодарен Вам', 'info')
+                }
+            })
         },
+        edit(index) {
+            this.$router.push({name: 'notaries-item', params: { id: index }})
+        }
     },
+    created() {
+        axios.get(`/api/v1/qualifications/select`).then(response => {
+            this.qualifications = response.data.qualifications;
+        }).catch(function (error) {
+            if (error.response) {
+                Swal.fire({
+                    title: 'Ошибка',
+                    text: 'Невозможно загрузить квалификации',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                });
+            }
+        });
+
+        axios.get('/api/v1/notaries').then(response => {
+            this.notaries = response.data.notaries;
+        }).catch(function (error) {
+            if (error.response) {
+                //обработка
+            }
+        });
+    },
+
     mounted() {
         window.scrollTo(0, 0)
     },
@@ -206,7 +263,47 @@ export default {
     box-decoration-break: clone;
 }
 
+.text-span {
+    font-size: 15px;
+    font-weight: 300;
+    padding: 8px;
+    line-height: 23px;
+    -moz-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    -moz-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -moz-border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    border-top-right-radius: 5px;
+    -webkit-box-decoration-break: clone;
+    -o-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
 .shown-hidden {
     font-size: 16px;
 }
+
+.action-button {
+    background-color: #71bff3;
+    color: #317aa4;
+    border: 2px solid #ffffff;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 30px;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.action-button:hover {
+    background-color: #71bff3;
+    color: #317aa4;
+    border: 2px solid #317aa4;
+
+}
+
 </style>

@@ -79,7 +79,7 @@ export default {
             id: '',
             name: '',
             price: 0,
-            category_id: this.cat_id
+            category_id: 0
         };
         return {
             subcategory,
