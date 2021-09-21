@@ -26,13 +26,16 @@
                                 </div>
                                 <div id="wrapper">
                                     <div class="btn-group btn-group-sm float-md-right" id="button-group-block">
-                                        <input type="text" class="style-input">
-                                        <button type="button" class="btn btn-primary"><h6>Поиск</h6></button>
+                                        <input type="text" v-model="filter.fio" class="style-input">
+                                        <button type="button" class="btn btn-primary" @click.prevent="searchNotary"><h6>Поиск</h6></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div v-if="loading" class="row mt-5">
+                            <p>Загрузка...</p>
+                        </div>
+                        <div v-else-if="notaries.length > 0" class="row">
                             <template v-for="notary in notaries">
                                 <div class="col-12 col-md-6 col-lg-4 mb-3">
                                     <div class="card h-100 border-0 rounded">
@@ -44,13 +47,13 @@
                                                 <span v-if="visible" class="image-span">
                                                     {{ notary.description }}
                                                 </span>
-                                                <span class="text-span">
+                                                <span class="text-span float-right">
                                                     <button
-                                                        class="action-button float-right"
+                                                        class="action-button"
                                                         @click="sweetAlert(notary.id)"><i class="fas fa-trash-alt"></i>
                                                     </button>
                                                     <button
-                                                        class="action-button float-right"
+                                                        class="action-button"
                                                         @click="edit(notary.id)"><i class="fas fa-pen-alt"></i>
                                                     </button>
                                                 </span>
@@ -73,10 +76,13 @@
                                 </div>
                             </template>
                         </div>
-                        <div class="row sorting mb-5 mt-5">
+                        <div v-else class="row padding-fix">
+                            <p>По Вашему запросу не нашлось нотариусов</p>
+                        </div>
+                        <div v-if="notaries.length >= 3" class="row sorting mb-5 mt-5">
                             <div class="col-12">
                                 <a class="btn btn-light" @click="scrollUp()">
-                                    <i class="fas fa-arrow-up mr-2"></i> Back to top</a>
+                                    <i class="fas fa-arrow-up mr-2"></i>Наверх</a>
                             </div>
                         </div>
                     </div>
@@ -87,9 +93,11 @@
                     <div class="price-filter-control">
                             <select class="form-control rounded-select m-1"
                                 name="qualification"
-                                id="qualification">
-                            <option :value="5" selected>Все квалификации</option>
-                            <option v-for="item in qualifications" :value="item.id">
+                                id="qualification"
+                                v-model="select_qualif"
+                                @change="searchNotary()">
+                            <option value="all" selected>Все квалификации</option>
+                            <option v-for="item in qualifications" :value="item.id" >
                                 {{ item.name }}
                             </option>
                         </select>
@@ -118,17 +126,64 @@ export default {
     data() {
         let qualifications = [ ];
         let notaries = [];
+        let filter = {
+            fio: '',
+            qualification_id: ''
+        }
         return {
             qualifications,
             show: false,
             message: 'Показать подсказку',
             visible: false,
-            notaries
+            notaries,
+            select_qualif: 'all',
+            search_query: '',
+            loading: true,
+            filter,
         }
     },
     methods: {
         scrollUp() {
             window.scrollTo(0, 0)
+        },
+        showByQuery(){
+            if (this.$route.query.fio) {
+                this.filter.fio = this.$route.query.fio
+            }
+            if (this.$route.query.qualification_id) {
+                this.filter.qualification_id = this.$route.query.qualification_id
+            }
+            axios.get('/api/v1/notaries', {
+                params: {
+                    "search-fio": this.filter.fio,
+                    "qualification-id": this.filter.qualification_id
+                }
+            })
+            .then(response => {
+                this.notaries = response.data.notaries;
+                this.loading = false;
+            })
+            .catch(error => {
+                return error
+            })
+        },
+        searchNotary: function () {
+                if (this.select_qualif !== 'all') {
+                    this.filter.qualification_id = this.select_qualif
+                } else {
+                    this.filter.qualification_id = null
+                }
+                if (this.filter.fio && !this.filter.qualification_id) {
+                    this.$router.replace({query: {'fio': this.filter.fio}})
+                }
+                else if (this.filter.qualification_id && !this.filter.fio) {
+                    this.$router.replace({query: {'qualification_id': this.filter.qualification_id}})
+                }
+                else if (this.filter.fio && this.filter.qualification_id) {
+                    this.$router.replace({query: {'fio': this.filter.fio ,'qualification_id': this.filter.qualification_id}})
+                }
+                else this.$router.replace({'query': null});
+
         },
         showClue() {
             this.show = !this.show;
@@ -187,18 +242,25 @@ export default {
                 });
             }
         });
-
-        axios.get('/api/v1/notaries').then(response => {
-            this.notaries = response.data.notaries;
-        }).catch(function (error) {
-            if (error.response) {
-                //обработка
-            }
-        });
+        this.showByQuery();
     },
 
     mounted() {
         window.scrollTo(0, 0)
+    },
+    watch: {
+        '$route.query.fio'(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.filter.fio = this.$route.query.fio
+                this.showByQuery()
+            }
+        },
+        '$route.query.qualification_id'(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.filter.qualification_id = this.$route.query.qualification_id
+                this.showByQuery()
+            }
+        }
     },
     name: "NotaryListComponent"
 }
@@ -304,6 +366,10 @@ export default {
     color: #317aa4;
     border: 2px solid #317aa4;
 
+}
+
+.padding-fix {
+    padding-top: 30px
 }
 
 </style>
