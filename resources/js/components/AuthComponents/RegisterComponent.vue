@@ -138,6 +138,22 @@ export default {
                     })
                     this.error_message = '';
                 } else {
+                    axios.post('/register', {
+                        "name": this.name,
+                        "email": this.email,
+                        "password": this.password,
+                        "password_confirmation": this.password_confirmed,
+                    }).then(response => {
+                            /*this.$cookies.set("email",this.email,"1d");
+                            axios.get('/api/v1/user').then(response => {
+                                    this.$cookies.set("name",response.data.name,"1d");
+                                    console.log(this.$cookies.get("name"));
+                                    console.log(this.$cookies.get("email"));
+                            })
+                            console.log('Куки записана');*/
+                        //тестовый код
+                        this.$router.push('/login');
+                    });
                     Swal.fire({
                         title: 'Все хорошо',
                         text: this.error_message,

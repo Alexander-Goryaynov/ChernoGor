@@ -83,6 +83,9 @@ export default {
             isAdmin: true,
             isAuthorized: true
         }
+    },
+    created() {
+
     }
 }
 </script>

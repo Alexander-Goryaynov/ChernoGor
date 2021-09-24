@@ -111,6 +111,21 @@ export default {
                     })
                     this.error_message = '';
                 } else {
+                    axios.post('/login', {
+                        "email": this.email,
+                        "password": this.password,
+                    }).then(response => {
+                            this.$cookies.set("email",this.email,"1d");
+                           // this.$cookies.set("fio",response.email,"1d");
+                            axios.get('/api/v1/user').then(response => {
+                                if (response.status === 200) {
+                                    this.$cookies.set("name",response.data.name,"1d");
+                                    console.log(this.$cookies.get("name"));
+                                }
+                            })
+                            console.log('Куки записана')
+                        this.$router.push('/');
+                    });
                     Swal.fire({
                         title: 'Все хорошо',
                         text: this.error_message,
