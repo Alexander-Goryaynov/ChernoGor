@@ -99,7 +99,6 @@ export default {
                     this.isAdmin = true;
                 }
             }
-            console.log('Переменная в навбаре - ' + this.updateNav);
         }
     },
     created() {
@@ -128,9 +127,10 @@ export default {
                     this.$cookies.remove("role");
                     this.$cookies.remove("email");
                     this.$cookies.remove("laravel_session");
-
+                    this.updateNav = 0;
                     this.isAuthorized = false;
                     this.isAdmin = false;
+                    eventBus.$emit('logout', this.updateNav);
                     axios.post('/logout').then(response => {
                         console.log(response);
                         this.$router.push('/login');

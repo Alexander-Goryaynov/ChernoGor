@@ -89,6 +89,7 @@
 
 <script>
 import Swal from "sweetalert2";
+import {eventBus} from "../../app";
 
 export default {
     data() {
@@ -98,8 +99,8 @@ export default {
             categories,
             active: null,
             subcategories: null,
-            isAdmin: true,
-            status: ''
+            isAdmin: false,
+            status: '',
         }
     },
     methods: {
@@ -194,6 +195,16 @@ export default {
             }
         }
     }, created() {
+        if (this.$cookies.get('role') === 'admin') {
+            this.isAuthorized = true;
+            this.isAdmin = true;
+        }
+
+        eventBus.$on('logout', data => {
+            this.isAuthorized = false;
+            this.isAdmin = false;
+        })
+
         axios.get('/api/v1/services/tree').then(response => {
             this.categories = response.data.categories;
         }).catch(function (error) {

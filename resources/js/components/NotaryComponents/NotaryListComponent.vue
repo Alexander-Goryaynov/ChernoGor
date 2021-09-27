@@ -47,7 +47,7 @@
                                                 <span v-if="visible" class="image-span">
                                                     {{ notary.description }}
                                                 </span>
-                                                <span class="text-span float-right">
+                                                <span v-if="isAdmin" class="text-span float-right">
                                                     <button
                                                         class="action-button"
                                                         @click="sweetAlert(notary.id)"><i class="fas fa-trash-alt"></i>
@@ -120,6 +120,7 @@
 
 <script>
 import Swal from "sweetalert2";
+import {eventBus} from "../../app";
 
 export default {
 
@@ -140,6 +141,9 @@ export default {
             search_query: '',
             loading: true,
             filter,
+            updateNav: null,
+            isAdmin: false,
+            isAuthorized: false
         }
     },
     methods: {
@@ -243,6 +247,15 @@ export default {
             }
         });
         this.showByQuery();
+
+        if (this.$cookies.get('role') === 'admin') {
+            this.isAuthorized = true;
+            this.isAdmin = true;
+        }
+        eventBus.$on('logout', data => {
+            this.isAuthorized = false;
+            this.isAdmin = false;
+        })
     },
 
     mounted() {
