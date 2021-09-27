@@ -111,7 +111,7 @@
                             <h5>Наивысшая: цена услуги <span class="text-primary">* 1,5</span></h5></div>
                         </div>
                     <a href="#" class="btn btn-lg btn-block btn-primary mt-5" @click.prevent="showClue">{{message}}</a>
-                    <router-link :to="{name: 'notaries-create'}" class="btn btn-lg btn-block action-button mt-1" >Создать нотариуса</router-link>
+                    <router-link v-if="isAdmin" :to="{name: 'notaries-create'}" class="btn btn-lg btn-block action-button mt-1" >Создать нотариуса</router-link>
                 </div>
             </div>
         </div>
