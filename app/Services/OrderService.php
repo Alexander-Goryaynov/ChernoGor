@@ -39,8 +39,7 @@ class OrderService implements IOrderService
         $order->price = $subcategory->price * $notary->qualification->coefficient;
         $order->status = OrderStatus::PROCESSING();
         $order->consultation_datetime = $carbon->toDateTimeString();
-        // TODO заменить 1 на реальный id пользователя
-        $order->user_id = 1; // request()->user()->id
+        $order->user_id = request()->user()->id;
         $order->subcategory_id = $model->subcategoryId;
         $order->notary_id = $model->notaryId;
         if ($this->anyOrderCollisions($order->notary_id, $order->consultation_datetime)) {
@@ -52,8 +51,7 @@ class OrderService implements IOrderService
             [
                 'ip' => request()->ip(),
                 'newId' => $order->id,
-                // TODO заменить null на реального пользователя
-                'user' => null, //request()->user(),
+                'user' => request()->user(),
                 'newData' => $model
             ]
         );
@@ -106,10 +104,9 @@ class OrderService implements IOrderService
     public function getOrdersList(?string $sortingColumn = null, ?string $sortingDirection = null): OrdersViewModel
     {
         $orders = Order::all();
-        // TODO раскомментировать фильтрацию заказов для юзера
-        /*if (request()->user()->role == Role::USER()->getValue()) {
+        if (request()->user()->role == Role::USER()->getValue()) {
             $orders = $orders->filter(fn (Order $o) => $o->user->id == request()->user()->id);
-        }*/
+        }
         if (isset($sortingColumn, $sortingDirection)) {
             $isDescending = ($sortingDirection == 'desc');
             $orders = $orders->sortBy($sortingColumn, SORT_REGULAR, $isDescending);
@@ -126,12 +123,11 @@ class OrderService implements IOrderService
                 $order->price,
                 $order->status
             );
-            // TODO раскомментировать добавление информации для админа
-            /*if (request()->user()->role == Role::ADMIN()->getValue()) {
+            if (request()->user()->role == Role::ADMIN()->getValue()) {
                 $orderView->created_at = Carbon::createFromTimeString($order->created_at)
                     ->isoFormat('D MMM Y H:mm');
                 $orderView->user_email = $order->user->email;
-            }*/
+            }
             $result->orders[] = $orderView;
         }
         return $result;
