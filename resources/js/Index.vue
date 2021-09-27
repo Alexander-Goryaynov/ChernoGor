@@ -16,11 +16,12 @@ import TheFooter from "./components/TheFooter";
 export default {
     data() {
         return {
-        }
+        };
     },
-    created() {
+    methods: {
     },
-    methods: {},
+    mounted() {
+    },
     components: { TheNavbar, TheFooter }
 }
 </script>

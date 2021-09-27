@@ -68,6 +68,9 @@
                                     </router-link>
                                 </div>
                             </li>
+                            <li v-if="isAuthorized" class="nav-item">
+                                <a class="nav-link" href="#" @click.prevent="logout()">Выйти</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -77,15 +80,71 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+import {eventBus} from "../app";
+
 export default {
     data() {
         return {
-            isAdmin: true,
-            isAuthorized: true
+            isAdmin: false,
+            isAuthorized: false,
+            updateNav: null
+        }
+    },
+    watch: {
+        updateNav: function(newVal, oldVal) { // watch it
+            if (this.$cookies.get("name") && this.$cookies.get("email") && this.$cookies.get("role")) {
+                this.isAuthorized = true;
+                if (this.$cookies.get("role") === 'admin') {
+                    this.isAdmin = true;
+                }
+            }
+            console.log('Переменная в навбаре - ' + this.updateNav);
         }
     },
     created() {
+        if (this.$cookies.get("name") && this.$cookies.get("email") && this.$cookies.get("role")) {
+           this.isAuthorized = true;
+           if (this.$cookies.get("role") === 'admin') {
+               this.isAdmin = true;
+           }
+        }
+        eventBus.$on('updateNav', data => {
+            this.updateNav = data.updateNav;
+            this.isAuthorized = true;
+            if (this.updateNav === 1) {
+                this.isAdmin = false;
+            }
+            else if (this.updateNav === 2) {
+                this.isAdmin = true;
+            }
+        })
+    },
+    methods: {
+        logout() {
+            try {
+               if (this.$cookies.get("name") && this.$cookies.get("email")) {
+                    this.$cookies.remove("name");
+                    this.$cookies.remove("role");
+                    this.$cookies.remove("email");
+                    this.$cookies.remove("laravel_session");
 
+                    this.isAuthorized = false;
+                    this.isAdmin = false;
+                    axios.post('/logout').then(response => {
+                        console.log(response);
+                        this.$router.push('/login');
+                    });
+               }
+            } catch {
+                Swal.fire({
+                    title: 'Ошибка',
+                    text: 'Попробуйте выйти чуть позже',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                });
+            }
+        }
     }
 }
 </script>

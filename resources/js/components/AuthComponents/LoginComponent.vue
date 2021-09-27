@@ -67,6 +67,7 @@
 
 <script>
 import Swal from "sweetalert2";
+import {eventBus} from "../../app";
 
 export default {
     data() {
@@ -74,7 +75,8 @@ export default {
             type: 'password',
             email: '',
             password: '',
-            error_message: ''
+            error_message: '',
+            updateNav: 0
         }
     },
     methods: {
@@ -96,12 +98,6 @@ export default {
             } else {
                 this.email = this.email.trim();
                 this.password = this.password.trim();
-                if (!(/\S+@\S+\.\S+/.test(this.email))) {
-                    this.error_message += "Email должен быть корректного формата. \n";
-                }
-                if ((this.password.length) < 3 || (this.password.length) > 30) {
-                    this.error_message += "Пароль должен содержать более 3 и менее 30 символов. \n";
-                }
                 if (this.error_message) {
                     Swal.fire({
                         title: 'Ошибка',
@@ -115,23 +111,43 @@ export default {
                         "email": this.email,
                         "password": this.password,
                     }).then(response => {
-                            this.$cookies.set("email",this.email,"1d");
-                           // this.$cookies.set("fio",response.email,"1d");
-                            axios.get('/api/v1/user').then(response => {
-                                if (response.status === 200) {
-                                    this.$cookies.set("name",response.data.name,"1d");
-                                    console.log(this.$cookies.get("name"));
-                                }
-                            })
-                            console.log('Куки записана')
+                        axios.get('/api/v1/user').then(response => {
+                            if (response.status === 200) {
+                                this.$cookies.set("email", response.data.email, 21600);
+                                this.$cookies.set("name", response.data.name, 21600);
+                                this.$cookies.set("role", response.data.role, 21600);
+                                console.log(this.$cookies.get("name"));
+                                console.log(this.$cookies.get("role"));
+                                console.log(this.$cookies.get("email"));
+                                if (this.$cookies.get("role") === 'admin') {
+                                    this.updateNav = 2
+                                } else this.updateNav = 1
+                                console.log('Переменная в Логине - ' + this.updateNav);
+                                eventBus.$emit('updateNav', this.updateNav);
+                            }
+                        }).catch(function (error) {
+                            if (error.response) {
+                                console.log('Проблема с получением информации пользователя')
+                            }
+                        });
+                        console.log('Куки записана')
+                        Swal.fire({
+                            title: 'Все хорошо',
+                            text: this.error_message,
+                            icon: 'success',
+                            confirmButtonText: 'Ок'
+                        })
                         this.$router.push('/');
+                    }).catch(function (error) {
+                        if (error.response) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Ошибка авторизации',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            });
+                        }
                     });
-                    Swal.fire({
-                        title: 'Все хорошо',
-                        text: this.error_message,
-                        icon: 'success',
-                        confirmButtonText: 'Ок'
-                    })
                 }
             }
         }

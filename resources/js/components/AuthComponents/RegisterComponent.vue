@@ -108,8 +108,7 @@ export default {
                     icon: 'error',
                     confirmButtonText: 'Ок'
                 });
-            }
-            else {
+            } else {
                 this.name = this.name.trim();
                 this.email = this.email.trim();
                 this.password = this.password.trim();
@@ -144,15 +143,10 @@ export default {
                         "password": this.password,
                         "password_confirmation": this.password_confirmed,
                     }).then(response => {
-                            /*this.$cookies.set("email",this.email,"1d");
-                            axios.get('/api/v1/user').then(response => {
-                                    this.$cookies.set("name",response.data.name,"1d");
-                                    console.log(this.$cookies.get("name"));
-                                    console.log(this.$cookies.get("email"));
-                            })
-                            console.log('Куки записана');*/
-                        //тестовый код
-                        this.$router.push('/login');
+                        this.$cookies.set("email", this.email, 21600);
+                        this.$cookies.set("name", this.name, 21600);
+                        this.$cookies.set("role", 'user', 21600);
+                        this.$router.push('/');
                     });
                     Swal.fire({
                         title: 'Все хорошо',
