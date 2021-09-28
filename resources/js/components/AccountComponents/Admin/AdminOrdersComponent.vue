@@ -22,19 +22,19 @@
                                         <select class="form-control rounded-select"
                                                 name="sortOrders"
                                                 id="sortOrders"
-                                                @change="sortByOption(selected)"
-                                                v-model="selected">
-                                            <option v-for="item in select_options" :key="item.value" :value="item.value"
-                                                    :selected="item.value === 'по дате'">{{ item.value }}
+                                                @change="sortByOption(sortType)"
+                                                v-model="sortType">
+                                            <option v-for="item in select_options" :key="item.name" :value="item.value"
+                                                    :selected="item.value === sortType">{{ item.value }}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="col-lg-4">
-                                        <a v-if="sortState" @click.prevent="sortUp()" href="#" >
+                                        <a v-if="sortState === 'asc'" @click.prevent="sortUp()" href="#" >
                                             <i class="fas fa-angle-double-up fa-lg up"></i> (по возр)
                                         </a>
 
-                                        <a v-else href="#" class="down" @click.prevent="sortDown()">
+                                        <a v-else href="#" class="down" @click.prevent="sortUp()">
                                             <i class="fas fa-angle-double-down fa-lg down"></i> (по убыв)
                                         </a></div>
                                 </div>
@@ -57,7 +57,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="order in orders">
+                        <tr v-for="order in orders" :key="order.id">
                             <td>{{ order.id }}</td>
                             <td>{{ order.user_email }}</td>
                             <td>{{ order.created_at }}</td>
@@ -70,11 +70,11 @@
                                 {{ statusValue(order.status) }}
                             </td>
                             <td>
-                                <a  @click.prevent="finish(order.id)" href="#" class="edit mr-3" title="" data-original-title="View">
+                                <a v-if="order.status === 'processing'" @click.prevent="finish(order.id)" href="#" class="edit mr-3" title="" data-original-title="View">
                                     <i style="color: Yellowgreen;" class="fas fa-check-circle fa-lg"></i>
                                 </a>
 
-                                <a href="#" class="delete" title="" @click.prevent="cancel(order.id)" data-original-title="Delete">
+                                <a v-if="order.status === 'processing'" href="#" class="delete" title="" @click.prevent="cancel(order.id)" data-original-title="Delete">
                                     <i style="color: Tomato;" class="far fa-times-circle fa-lg"></i>
                                 </a>
                             </td>
@@ -92,12 +92,14 @@ export default {
     data() {
         const select_options = [
             {
+                name: 'consultation_datetime',
                 value: 'по дате'
             },
-            {
+            {   name: 'status',
                 value: 'по статусу'
             },
             {
+                name: 'price',
                 value: 'по цене'
             }
         ];
@@ -117,64 +119,25 @@ export default {
             }
         ]
 
-        const orders = [
-            {
-                id: 1,
-                user_email: "somebody@once.toldme", // для админа
-                created_at: "12 июн 2020 5:35", // для админа
-                subcategory_name: "Брачный договор",
-                notary_fio: "Колесников Варлаам Кириллович",
-                address: "ул. Неоновая, 34 Б",
-                consultation_datetime: "14 июн 2020 10:00",
-                price: 5200,
-                status: "processing"  // enum
-            },
-            {
-                id: 2,
-                user_email: "theworld@is.gonna", // для админа
-                created_at: "16 июн 2020 5:35", // для админа
-                subcategory_name: "Договор о купле-продаже непдвижимости",
-                notary_fio: "Субботин Валерий Степанович",
-                address: "ул. Трамвайная, 36 Б",
-                consultation_datetime: "18 июн 2020 10:00",
-                price: 7200,
-                status: "canceled"  // enum
-            },
-            {
-                id: 3,
-                user_email: "roll@me.yeah", // для админа
-                created_at: "17 июн 2020 5:35", // для админа
-                subcategory_name: "Выдача общей доверенности",
-                notary_fio: "Булкин Даниил Викторович",
-                address: "ул. Унылова, 25 Б ",
-                consultation_datetime: "19 июн 2020 10:00",
-                price: 8200,
-                status: "finished"  // enum
-            },
-            // ...
-        ]
+        const orders = []
+
 
         return {
             select_options,
-            selected: 'по дате',
             orders,
             statuses,
-            sortState: true
+            sortType: 'по дате',          
+            sortState: 'asc'
         }
     },
     methods: {
-        sortByOption(index) {
-            if (index === 'по дате') {
-                //sortByDate
-                console.log(index)
-            } else if (index === 'по статусу') {
-                //sortByStatus
-                console.log(index)
-
-            } else if (index === 'по цене') {
-                //sortByPrice
-                console.log(index)
-
+        sortByOption() {
+           if (this.sortType === 'по дате') {
+                this.$router.replace({query: {'sort': 'consultation_datetime'}})
+            } else if (this.sortType === 'по статусу') {
+                this.$router.replace({query: {'sort': 'status'}})
+            } else if (this.sortType === 'по цене') {
+                this.$router.replace({query: {'sort': 'price'}})
             }
         },
         isActive(status) {
@@ -189,18 +152,49 @@ export default {
             return this.statuses.find(x => x.name === value).value;
         },
         sortUp() {
-            this.sortState = ! this.sortState
-            console.log('up')
-        },
-        sortDown() {
-            this.sortState = ! this.sortState
-            console.log('down')
+           if (this.sortState === 'asc') {
+                 this.sortState = 'desc';
+            }
+            else {
+                this.sortState = 'asc'
+            }
+            this.getOrders();
         },
         finish(id) {
-            this.orders.find(x => x.id === id).status = 'finished';
+             axios.post('/api/v1/orders/' + id + '/finish').then(response => {
+               this.getOrders();
+           })
         },
         cancel(id) {
-            this.orders.find(x => x.id === id).status = 'canceled';
+           axios.post('/api/v1/orders/' + id + '/cancel').then(response => {
+               this.getOrders();
+           })
+        },
+        showByQuery() {
+            if (this.$route.query.sort) {
+                let routeName = this.select_options.find((x) => x.name === this.$route.query.sort)
+                this.sortType = routeName.value
+                this.getOrders(routeName.name);
+            }
+            else this.getOrders();
+        },
+        getOrders(sortType = 'status') {
+            axios.get(`/api/v1/orders?sort=${sortType}:${this.sortState}`).then(response => {
+                this.orders = response.data.orders;
+            }).catch(error => {
+                console.log(this.error)
+            })
+        }
+    },
+    created() {
+        this.showByQuery();
+    }, 
+    watch: {
+        '$route.query.sort'(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.sortType = this.select_options.find((x) => x.name === this.$route.query.sort).value
+                this.showByQuery()
+            }
         }
     }
 }
