@@ -30,9 +30,9 @@
                                             <select class="form-control rounded-select"
                                                     name="selectNotary"
                                                     id="selectNotary"
-                                                    @change="selectNotary(selectedNotary)"
+                                                    @change="selectNotary()"
                                                     v-model="selectedNotary" required>
-                                                <option v-for="item in notariesList" :value="item.id">{{ item.fio }}
+                                                <option v-for="item in notariesList" :key="item.id + 'notary'" :value="item.id">{{ item.fio }}
                                                 </option>
                                             </select>
                                         </fieldset>
@@ -48,7 +48,7 @@
                                                     @change="selectCategory(selectedService)"
                                                     v-model="selectedService" required>
                                                 <template v-if="selectedNotary !== null">
-                                                <option v-for="item in categoriesList" :value="item.id">{{ item.name }}
+                                                <option v-for="item in categoriesList"  :key="item.id + 'cat'" :value="item.id">{{ item.name }}
                                                 </option>
                                                 </template>
                                                 <template v-else>
@@ -65,10 +65,10 @@
                                             <select class="form-control rounded-select"
                                                     name="selectedSubcategory"
                                                     id="selectedSubcategory"
-                                                    @change="selectSubCategory(selectedSubcategory)"
+                                                    @change="selectSubCategory()"
                                                     v-model="selectedSubcategory" required>
                                                 <template v-if="subcategoriesList">
-                                                    <option v-for="item in subcategoriesList" :value="item.id">{{ item.name }}
+                                                    <option v-for="item in subcategoriesList" :key="item.id + 'subcat'" :value="item.id">{{ item.name }}
                                                     </option>
                                                 </template>
                                                 <template v-else>
@@ -88,7 +88,7 @@
                                                     @change="selectDate(selectedDate)"
                                                     v-model="selectedDate" required>
                                                 <template v-if="dates">
-                                                    <option v-for="item in dates" :value="item.value">{{ item.value }}
+                                                    <option v-for="item in dates" :selected="!selectedDate" :value="item.value">{{ item.value }}
                                                     </option>
                                                 </template>
                                                 <template v-else>
@@ -112,7 +112,7 @@
                                                     </option>
                                                 </template>
                                                 <template v-else>
-                                                    <option value="" disabled>Выберите дату</option>
+                                                    <option value="" disabled :selected="!selectedDate">Выберите дату</option>
                                                 </template>
                                             </select>
                                         </fieldset>
@@ -126,7 +126,7 @@
 
                                     <div class="col-lg-12">
                                         <fieldset>
-                                            <button type="submit" id="form-submit" class="border-button">Создать заявку
+                                            <button type="submit" @click.prevent="makeRequest()" id="form-submit" class="border-button">Создать заявку
                                             </button>
                                         </fieldset>
                                     </div>
@@ -141,38 +141,15 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+
+
 export default {
     data() {
-        let notariesList = [{
-            id: 0,
-            fio: 'Субботин Валерий Степанович',
-            coefficient: 1.25
-        },
-            {
-                id: 1,
-                fio: 'Куропаткин Денис Васильевич',
-                coefficient: 1
-            },
-            {
-                id: 2,
-                fio: 'Артасов Максим Петрович',
-                coefficient: 1.5
-            },
-        ];
+        let notariesList = [];
 
-        let categoriesList = [{
-            id: 0,
-            name: 'Удостоверение сделок',
-        },
-            {
-                id: 1,
-                name: 'Консультация',
-            },
-            {
-                id: 2,
-                name: 'Выдача доверенностей',
-            },
-        ];
+        let categoriesList = [];
+
         return {
             notariesList,
             boxData: {},
@@ -181,7 +158,7 @@ export default {
             selectedSubcategory: null,
             selectedService: null,
             categoriesList,
-            subcategoriesList: '',
+            subcategoriesList: [],
             dates: null,
             selectedDate: null,
             times: null,
@@ -190,100 +167,39 @@ export default {
     },
     methods: {
         getSubcategory(index) {
-            if (index === 0) {
-                this.subcategoriesList = [{
-                    id: 0,
-                    name: 'Брачные договоры',
-                    price: 2000
-                },
-                    {
-                        id: 1,
-                        name: 'Договоры о купле-продаже недвижимости',
-                        price: 5000
-                    },
-                    {
-                        id: 2,
-                        name: 'Наследственные документы',
-                        price: 4500
-                    },
-                ];
-            } else if (index === 1) {
-
-                this.subcategoriesList = [{
-                    id: 0,
-                    name: 'Вопросы по доверенностям',
-                    price: 2000
-                },
-                    {
-                        id: 1,
-                        name: 'Вопросы по брачному договору',
-                        price: 3500
-                    },
-                    {
-                        id: 2,
-                        name: 'Вопросы по договорам о купле-продаже недвижимости',
-                        price: 6500
-                    },
-                ];
-
-            } else if (index === 2) {
-                this.subcategoriesList = [{
-                    id: 0,
-                    name: 'Выдача общей доверенности',
-                    price: 5000
-                },
-                    {
-                        id: 1,
-                        name: 'Выдача специальной доверенности',
-                        price: 6000
-                    },
-                    {
-                        id: 2,
-                        name: 'Выдача разовой довереннсоти',
-                        price: 3500
-                    },
-                ];
-            }
-            console.log(this.subcategoriesList)
-            /*axios.get(URL + this.currentCurrency)
-                .then(response => {
-                    this.Data = response.data;
-                })
-                .catch(e => {
-                    this.errors.push(e)
-                })*/
+            axios.get('api/v1/subcategories/select?category-id=' + index).then(response => {
+                this.subcategoriesList = response.data.subcategories;
+            })
+            .catch(error => {
+                return error
+            })
         },
-        selectNotary(index) {
-            console.log(this.notariesList.find(x => x.id === index));
+        selectNotary() {
+            this.uploadDates();
             this.updatePrice();
         },
         selectCategory(index) {
-            console.log(this.categoriesList.find(x => x.id === index));
             this.getSubcategory(index);
-            this.updatePrice();
-
         },
-        selectSubCategory(index) {
-            console.log(this.subcategoriesList.find(x => x.id === index));
-
-            this.dates = [
-                {
-                    value: '24 авг 2021',
-                    times: ['13:00', '14:00', '16:00']
-                }, {
-                    value: '25 авг 2021',
-                    times: ['11:00', '12:00', '16:00']
-                }, {
-                    value: '26 авг 2021',
-                    times: ['16:00', '18:00', '20:00']
-                }
-            ]
+        selectSubCategory() {
             this.updatePrice();
+        },
+        uploadDates() {
+             axios.get('api/v1/schedule/select?notary-id=' + this.selectedNotary).then(response => {
+              this.dates = response.data.dates;
+              this.selectedDate = null;
+              this.selectedTime = null;
+            }).catch (error => {
+                console.log('проблема с загрузкой дат')
+            })
         },
         selectDate(index) {
-            console.log(this.selectDate)
-            this.times = this.dates.find(x => x.value === index).times;
-            console.log(this.times)
+            try {
+                if (this.dates !== null) {
+                    this.times = this.dates.find(x => x.value === index).times;
+                }
+            }
+            catch { }
         },
         selectTime(index) {
             console.log(this.selectedTime)
@@ -293,7 +209,45 @@ export default {
                 let coeff = parseFloat(this.notariesList.find(x => x.id === this.selectedNotary).coefficient);
                 this.price = parseFloat(this.subcategoriesList.find(x => x.id === this.selectedSubcategory).price) * coeff;
             }
+        },
+        makeRequest() {
+           axios.post('api/v1/orders', {
+              "notary_id": this.selectedNotary,
+              "subcategory_id": this.selectedSubcategory,
+              "consultation_date": this.selectedDate,
+              "consultation_time":this.selectedTime 
+           }).then(response => {
+                Swal.fire({
+                    title: 'Все хорошо',
+                    text: 'Ваша заявка успешно создана',
+                    icon: 'success',
+                    timer: 1000
+                })
+                setTimeout(() => this.$router.push({ path: '/'}), 1000);
+           }).catch(error => {
+                 Swal.fire({
+                    title: 'Ошибка',
+                    text: 'Что-то пошло не так',
+                    icon: 'error',
+                    confirmButtonText: 'Ок'
+                })
+           })
         }
+    },
+    created() {
+        axios.get('/api/v1/notaries/select').then(response => {
+            this.notariesList = response.data.notaries;
+            axios.get('/api/v1/categories/select').then(response => {
+                this.categoriesList = response.data.categories;
+            })
+            .catch(error => {
+                return error
+            })
+        })
+        .catch(error => {
+            return error
+        })
+
     },
     mounted() {
         window.scrollTo(0, 0)

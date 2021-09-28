@@ -149,9 +149,9 @@ export default {
                         this.$router.push('/');
                     });
                     Swal.fire({
-                        title: 'Все хорошо',
+                        title: 'Ошибка',
                         text: this.error_message,
-                        icon: 'success',
+                        icon: 'error',
                         confirmButtonText: 'Ок'
                     })
                 }

@@ -56,7 +56,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="order in orders">
+                        <tr v-for="order in orders" :key="order.id">
                             <td>{{ order.id }}</td>
                             <td>{{ order.created_at }}</td>
                             <td>{{ order.subcategory_name }}</td>
@@ -193,6 +193,13 @@ export default {
         cancel(id) {
             this.orders.find(x => x.id === id).status = 'canceled';
         }
+    },
+    created() {
+        axios.get('/api/v1/orders?sort=status:asc').then(response => {
+            console.log(response.data)
+        }).catch(error => {
+            console.log(this.error)
+        })
     }
 }
 </script>

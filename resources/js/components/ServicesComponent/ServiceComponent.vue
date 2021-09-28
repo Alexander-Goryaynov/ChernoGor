@@ -211,10 +211,10 @@ export default {
         axios
           .delete("/api/v1/categories/" + index)
           .then((response) => {
-            let num = this.categories.findIndex(function (item, i) {
-              return item.id === index;
-            });
-            let removed = this.categories.splice(num, 1);
+            axios.get("/api/v1/services/tree").then((response) => {
+                this.categories = response.data.categories;
+                this.active = null;
+            })
             //удаление
             Swal.fire({
               title: "Успех",

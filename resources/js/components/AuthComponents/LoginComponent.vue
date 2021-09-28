@@ -130,13 +130,6 @@ export default {
                                 console.log('Проблема с получением информации пользователя')
                             }
                         });
-                        console.log('Куки записана')
-                        Swal.fire({
-                            title: 'Все хорошо',
-                            text: this.error_message,
-                            icon: 'success',
-                            confirmButtonText: 'Ок'
-                        })
                         this.$router.push('/');
                     }).catch(function (error) {
                         if (error.response) {
