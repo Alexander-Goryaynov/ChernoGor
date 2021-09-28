@@ -35,7 +35,7 @@
                                                         name="catName"
                                                         id="catName"
                                                         v-model="new_category">
-                                                        <option v-for="item in categories" :selected="category_id === item.id" :value="item.id">{{ item.name }}
+                                                        <option v-for="item in categories" :key="item.id" :selected="category_id === item.id" :value="item.id">{{ item.name }}
                                                         </option>
                                                 </select>
                                             </fieldset>

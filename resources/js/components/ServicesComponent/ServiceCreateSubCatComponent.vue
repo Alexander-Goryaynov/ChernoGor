@@ -34,8 +34,8 @@
                                                 <select class="form-control rounded-select"
                                                         name="catName"
                                                         id="catName"
-                                                        v-model="subcategory.category_id">
-                                                    <option v-for="item in categories" :selected="subcategory.category_id === item.id" :value="item.id">{{ item.name }}
+                                                        v-model="selected_cat">
+                                                    <option v-for="item in categories" :key="item.id" :selected="selected_cat === item.id" :value="item.id">{{ item.name }}
                                                     </option>
                                                 </select>
                                             </fieldset>
@@ -84,10 +84,12 @@ export default {
         return {
             subcategory,
             categories: [],
-            error_message: ''
+            error_message: '',
+            selected_cat: 0
         }
     },
     created() {
+        this.selected_cat = this.cat_id;
         axios.get('/api/v1/categories/select').then(response => {
             this.categories = response.data.categories;
         }).catch(function (error) {
@@ -104,6 +106,7 @@ export default {
     name: "ServiceItemComponent",
     methods: {
         check() {
+           this.subcategory.category_id = this.selected_cat;
             if (!this.subcategory.name) {
                 Swal.fire({
                     title: 'Ошибка',
@@ -164,16 +167,7 @@ export default {
     },
     mounted() {
         window.scrollTo(0, 0);
-        /*if (!this.subcategory.name || !this.subcategory.price || this.subcategory.category_id <= 0) {
-            Swal.fire({
-                title: 'Ошибка',
-                text: 'Сначала выберите категорию',
-                icon: 'error',
-                timer: 1000,
-            }).then((result) => {
-                this.$router.push('/categories/');
-            });*/
-        }
+    }
 }
 </script>
 
