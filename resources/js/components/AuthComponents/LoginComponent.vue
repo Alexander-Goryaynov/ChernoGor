@@ -124,13 +124,18 @@ export default {
                                 } else this.updateNav = 1
                                 console.log('Переменная в Логине - ' + this.updateNav);
                                 eventBus.$emit('updateNav', this.updateNav);
+                                if (this.$cookies.get("role") === 'user') {
+                                    this.$router.push('/');
+                                }
+                                else if (this.$cookies.get("role") === 'admin') {
+                                    this.$router.push({ name: 'admin-orders' });
+                                }
                             }
                         }).catch(function (error) {
                             if (error.response) {
                                 console.log('Проблема с получением информации пользователя')
                             }
                         });
-                        this.$router.push('/categories');
                     }).catch(function (error) {
                         if (error.response) {
                             Swal.fire({
