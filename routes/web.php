@@ -12,3 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/{any?}', function () { //все, что приходит по запросу: / или /regex_выражение будет перенаправлено на welcome
+    return view('welcome');
+})->where('any', '^(?!api\/)[\/\w\.-]*'); // регекс: text/lala/yohoo, или home, или labdab и тд, но не подходит
+// для api/v1/notaries. так как для подобного регекса будет другой маршрут
