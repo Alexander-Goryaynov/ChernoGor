@@ -22,19 +22,18 @@
                                         <select class="form-control rounded-select"
                                                 name="sortOrders"
                                                 id="sortOrders"
-                                                @change="sortByOption(selected)"
-                                                v-model="selected">
+                                                @change="sortByOption(sortType)"
+                                                v-model="sortType">
                                             <option v-for="item in select_options" :key="item.value" :value="item.value"
-                                                    :selected="item.value === 'по дате'">{{ item.value }}
+                                                    :selected="item.value === sortType">{{ item.value }}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="col-lg-3">
-                                        <a v-if="sortState" @click.prevent="sortUp()" href="#" >
+                                        <a v-if="sortState === 'asc'" @click.prevent="sortUp()" href="#" >
                                             <i class="fas fa-angle-double-up fa-lg up"></i> (по возр)
                                         </a>
-
-                                        <a v-else href="#" class="down" @click.prevent="sortDown()">
+                                        <a v-else href="#" class="down" @click.prevent="sortUp()">
                                             <i class="fas fa-angle-double-down fa-lg down"></i> (по убыв)
                                         </a></div>
                                 </div>
@@ -53,12 +52,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="account in accounts">
+                        <tr v-for="account in accounts" :key="account.id">
                             <td>{{ account.email }}</td>
                             <td>{{ account.name }}</td>
                             <td>{{ account.created_at }}</td>
                             <td>{{ account.orders_count }}</td>
-                            <td>{{ account.average_sum }}</td>
+                            <td>{{ account.average_sum }} рублей</td>
                             <td>{{ account.last_ordered_at }}</td>
                         </tr>
                         </tbody>
@@ -74,79 +73,79 @@ export default {
     data() {
         const select_options = [
             {
+                name: 'last_ordered_at',
                 value: 'по дате посл. заказа'
             },
             {
+                name: 'orders_count',
                 value: 'по количеству заказов'
             },
             {
+                name: 'average_sum',
                 value: 'по ср. стоимости'
             }
         ];
 
-        const accounts = [
-            {
-                email: "daenerys@mail.ru",
-                name: "Таргариен Дейнерис Эйрисовна",
-                created_at: "18 мар 2020 09:50",
-                orders_count: 1,
-                average_sum: 5000,
-                last_ordered_at: "25 авг 2021 10:30 (5 дней назад)"
-            },
-            {
-                email: "whitequeen@mail.ru",
-                name: "Белая Королева Подземья",
-                created_at: "10 мар 2020 09:50",
-                orders_count: 5,
-                average_sum: 12000,
-                last_ordered_at: "30 авг 2021 13:36 (15 минут назад)"
-            },
-            {
-                email: "dobrynya@mail.ru",
-                name: "Добрыня Никитич Богатырь",
-                created_at: "16 мар 2020 09:50",
-                orders_count: 10,
-                average_sum: 10000,
-                last_ordered_at: "30 авг 2020 13:20 (30 минут назад назад)"
-            },
-            // ...
-        ]
+        const accounts = []
 
 
         return {
             select_options,
-            selected: 'по дате посл. заказа',
+            sortType: 'по количеству заказов',
             accounts,
-            sortState: true
+            sortState: 'asc'
         }
     },
     methods: {
-        sortByOption(index) {
-            if (index === 'по дате посл. заказа') {
-                //sortByDate
-                console.log(index)
-            } else if (index === 'по количеству заказов') {
-                //sortByOrderCount
-                console.log(index)
-
-            } else if (index === 'по ср. стоимости') {
-                //sortByPrice
-                console.log(index)
-
+        sortByOption() {
+            if (this.sortType === 'по дате посл. заказа') {
+                this.$router.replace({query: {'sort': 'last_ordered_at'}})
+            } else if (this.sortType === 'по количеству заказов') {
+                this.$router.replace({query: {'sort': 'orders_count'}})
+            } else if (this.sortType === 'по ср. стоимости') {
+                this.$router.replace({query: {'sort': 'average_sum'}})
             }
         },
         statusValue(value) {
             return this.statuses.find(x => x.name === value).value;
         },
         sortUp() {
-            this.sortState = ! this.sortState
-            console.log('up')
+           if (this.sortState === 'asc') {
+                 this.sortState = 'desc';
+            }
+            else {
+                this.sortState = 'asc'
+            }
+            this.getUsers();
         },
-        sortDown() {
-            this.sortState = ! this.sortState
-            console.log('down')
+        showByQuery() {
+            if (this.$route.query.sort) {
+                let routeName = this.select_options.find((x) => x.name === this.$route.query.sort)
+                this.sortType = routeName.value
+                this.getUsers(routeName.name);
+            }
+            else this.getUsers();
+        },
+        getUsers(sortType = 'orders_count') {
+            axios.get(`/api/v1/accounts?sort=${sortType}:${this.sortState}`).then(response => {
+                this.accounts = response.data.accounts;
+                console.log(response.data);
+            }).catch(error => {
+                console.log(this.error)
+            })
+        },
+    }, 
+    watch: {
+        '$route.query.sort'(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.sortType = this.select_options.find((x) => x.name === this.$route.query.sort).value
+                this.showByQuery()
+            }
         }
-    }
+    },
+    created() {
+            this.showByQuery();
+    }, 
 }
 </script>
 
