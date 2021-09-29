@@ -9,8 +9,8 @@
                         <span v-else>Здравствуйте, {{ userName }}, оставьте заявку на нашем сайте прямо сейчас</span>
                     </div>
                     <div class="col-md-4">
-                        <router-link v-if="!isAuthorized" class="border-button" :to="{name: 'register'}">Зарегистрироваться</router-link>
-                        <router-link v-else class="filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
+                        <router-link v-if="!isAuthorized" class="bord border-button" :to="{name: 'register'}">Зарегистрироваться</router-link>
+                        <router-link v-else class="bord filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
                     </div>  
                 </div>
             </div>
@@ -99,5 +99,7 @@ export default {
 </script>
 
 <style scoped>
-
+ .bord {
+     border: 2px solid #ffffff !important;
+ }
 </style>
