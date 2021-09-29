@@ -30,7 +30,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <p> Нотарька </p>
+                        <p>© Нотариальная контора "ChernoGor"</p>
                     </div>
                 </div>
             </div>

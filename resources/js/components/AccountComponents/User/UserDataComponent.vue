@@ -66,7 +66,7 @@
                                                    placeholder="Повторите пароль">
                                         </fieldset>
                                     </div>
-                                    <div class="col-lg-2 col-md-2 col-sm-2 mb-3">
+                                    <div class="col-lg-2 col-md-2 col-sm-2 mb-3 move">
                                         <fieldset>
                                             <button type="button" id="hide-show" @click="showPassword()"
                                                     class="action-button">
@@ -207,6 +207,9 @@ export default {
 .action-button:hover {
     background-color: #fff;
     color: #75b3dc;
+}
+.move {
+    padding-top: 35px;
 }
 
 
