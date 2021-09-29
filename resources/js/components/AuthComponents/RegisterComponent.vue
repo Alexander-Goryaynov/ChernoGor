@@ -146,7 +146,7 @@ export default {
                         this.$cookies.set("email", this.email, 21600);
                         this.$cookies.set("name", this.name, 21600);
                         this.$cookies.set("role", 'user', 21600);
-                        this.$router.push('/');
+                        this.$router.push('/categories');
                     });
                     Swal.fire({
                         title: 'Ошибка',

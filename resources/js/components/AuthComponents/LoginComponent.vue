@@ -130,7 +130,7 @@ export default {
                                 console.log('Проблема с получением информации пользователя')
                             }
                         });
-                        this.$router.push('/');
+                        this.$router.push('/categories');
                     }).catch(function (error) {
                         if (error.response) {
                             Swal.fire({

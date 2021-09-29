@@ -17,11 +17,9 @@
                     <div class="col-md-2 footer-item">
                         <h4>Разделы сайта</h4>
                         <ul class="menu-list">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">How We Work</a></li>
-                            <li><a href="#">Quick Support</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
+                            <li><router-link class="nav-link" :to="{name: 'home'}">Главная</router-link></li>
+                            <li><router-link class="nav-link" :to="{name: 'categories'}">Наши услуги</router-link></li>
+                            <li><router-link class="nav-link" :to="{name: 'notaries'}">Наши нотариусы</router-link></li>
                         </ul>
                     </div>
                 </div>

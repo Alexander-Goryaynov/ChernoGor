@@ -5,11 +5,13 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h4>Хотите записаться к нам на приём?</h4>
-                        <span>Зарегистрируйтесь и оставьте заявку на нашем сайте прямо сейчас</span>
+                        <span v-if="!isAuthorized">Зарегистрируйтесь и оставьте заявку на нашем сайте прямо сейчас</span>
+                        <span v-else>Здравствуйте, {{ userName }}, оставьте заявку на нашем сайте прямо сейчас</span>
                     </div>
                     <div class="col-md-4">
-                        <a href="#" class="border-button">Зарегистрироваться</a>
-                    </div>
+                        <router-link v-if="!isAuthorized" class="border-button" :to="{name: 'register'}">Зарегистрироваться</router-link>
+                        <router-link v-else class="filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
+                    </div>  
                 </div>
             </div>
         </div>
@@ -30,7 +32,7 @@
                                 <h4>Найти нотариуса</h4>
                                 <p>Для ознакомления с нашими нотариусами для записи на прием необходимо перейти по
                                     ссылке ниже</p>
-                                <a href="" class="filled-button">Список нотариусов</a>
+                                <router-link class="filled-button" :to="{name: 'notaries'}">Список нотариусов</router-link>
                             </div>
                         </div>
                     </div>
@@ -41,7 +43,7 @@
                                 <h4>О наших услугах</h4>
                                 <p>Чтобы изучить полный список предоставляемых услуг, для этого нужно перейти по ссылке
                                     ниже на страницу с услугами</p>
-                                <a href="" class="filled-button">Список услуг</a>
+                                <router-link class="filled-button" :to="{name: 'categories'}">Список услуг</router-link>
                             </div>
                         </div>
                     </div>
@@ -52,7 +54,8 @@
                                 <h4>Нужна консультация?</h4>
                                 <p>Наши сотрудники call-центра с радостью помогут Вам определиться с нотариусом и
                                     записаться на прием</p>
-                                <a href="" class="filled-button">Оставить заявку</a>
+                                <router-link v-if="isAuthorized" class="filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
+                                <router-link v-else class="filled-button" :to="{name: 'login'}">Войти</router-link>
                             </div>
                         </div>
                     </div>
@@ -65,6 +68,33 @@
 
 <script>
 export default {
+     components: {
+    },
+    data() {
+        return {
+            isAuthorized: null,
+            updateNav: null,
+            userName: null
+        }
+    },
+    watch: {
+        updateNav: function(newVal, oldVal) { // watch it
+            if (this.$cookies.get("name") && this.$cookies.get("email")) {
+                this.isAuthorized = true;
+                this.userName = this.$cookies.get("name");
+            }
+        }
+    },
+    created() {
+        if (this.$cookies.get("name") && this.$cookies.get("email")) {
+           this.isAuthorized = true;
+           this.userName = this.$cookies.get("name");
+        }
+        eventBus.$on('updateNav', data => {
+            this.updateNav = data.updateNav;
+            this.isAuthorized = true;
+        })
+    }
 }
 </script>
 

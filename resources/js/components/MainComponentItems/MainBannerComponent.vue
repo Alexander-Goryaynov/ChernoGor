@@ -13,7 +13,10 @@
                                     <h4>Сложная задача - <br>простое решение</h4>
                                     <p>Нотариальная контора "Chernogor" поможет Вам с легкостью найти подходящего
                                         нотариуса и решить Вашу проблему в кратчайшие сроки.</p>
-                                    <a href="#" class="filled-button">Оставить заявку</a>
+                                    <router-link v-if="isAuthorized" class="filled-button" :to="{name: 'create-order'}">Оставить заявку
+                                    </router-link>
+                                    <router-link v-else class="filled-button" :to="{name: 'register'}">Зарегистрироваться
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -27,7 +30,7 @@
                                     <p>Сотрудники нотариальной конторы "Chernogor" - высококвалифицированные, опытные
                                         специалисты. <br> Они помогут решить любой Ваш вопрос, связанный с оказанием
                                         абсолютно любой нотариальной услуги.</p>
-                                    <a href="#" class="filled-button">Список Нотариусов</a>
+                                      <router-link class="filled-button" :to="{name: 'notaries'}">Список нотариусов</router-link>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +45,8 @@
                                         клиентов. <br>
                                         Чтобы ознакомиться с полным списком услуг нотариальной конторы - пройдите по
                                         ссылке и узнайте подробную информацию о каждой из них. </p>
-                                    <a href="#" class="filled-button">Узнать больше</a>
+                                    <router-link class="filled-button" :to="{name: 'categories'}">Узнать больше</router-link>
+
                                 </div>
                             </div>
                         </div>
@@ -68,9 +72,26 @@ export default {
     components: {
     },
     data() {
-        return {}
+        return {
+            isAuthorized: null,
+            updateNav: null
+        }
+    },
+    watch: {
+        updateNav: function(newVal, oldVal) { // watch it
+            if (this.$cookies.get("name") && this.$cookies.get("email")) {
+                this.isAuthorized = true;
+            }
+        }
     },
     created() {
+        if (this.$cookies.get("name") && this.$cookies.get("email")) {
+           this.isAuthorized = true;
+        }
+        eventBus.$on('updateNav', data => {
+            this.updateNav = data.updateNav;
+            this.isAuthorized = true;
+        })
     }
 };
 </script>
