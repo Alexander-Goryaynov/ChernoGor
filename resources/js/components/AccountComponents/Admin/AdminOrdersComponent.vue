@@ -126,7 +126,7 @@ export default {
             select_options,
             orders,
             statuses,
-            sortType: 'по дате',          
+            sortType: 'по статусу',          
             sortState: 'asc'
         }
     },
