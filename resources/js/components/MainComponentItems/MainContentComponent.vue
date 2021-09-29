@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import {eventBus} from "../../app";
+
 export default {
      components: {
     },

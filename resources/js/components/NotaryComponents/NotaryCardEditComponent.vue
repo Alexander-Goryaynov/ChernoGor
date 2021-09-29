@@ -127,14 +127,21 @@ export default {
             new_fio: '',
             new_image: '',
             new_qualif: null,
-            new_schedule: null,
+            new_schedule: [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0]
+            ],
             new_address: '',
             new_desc: '',
             notary,
             qualifications,
             days,
             hours,
-            error_message: ''
+            error_message: '',
         }
     },
     methods: {
@@ -149,11 +156,26 @@ export default {
             }
             else if (this.notary.fio === this.new_fio && this.notary.photo === this.new_image
                 && this.notary.description === this.new_desc && this.notary.office_address === this.new_address) {
-                    Swal.fire({
-                        title: 'Ошибка',
-                        text: 'Данные должны отличаться',
-                        icon: 'error',
-                        confirmButtonText: 'Ок'
+                    const notaryId = this.$route.params.id;
+                    axios.get(`/api/v1/notaries/${notaryId}/edit`).then(response => {
+                       if (response.data.schedule === this.new_schedule) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Данные должны отличаться',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            });
+                       }
+                       else {
+                             this.updateNotary();
+                       }
+                    }).catch(function (error) {
+                        Swal.fire({
+                            title: 'Ошибка',
+                            text: 'Что-то пошло не так',
+                            icon: 'error',
+                            confirmButtonText: 'Ок'
+                        });
                     });
             }
             else {
@@ -179,35 +201,37 @@ export default {
                     })
                     this.error_message = '';
                 } else {
-                    axios.put('/api/v1/notaries/' + this.$route.params.id,
-                        {
-                            "fio": this.new_fio,
-                            "description": this.new_desc,
-                            "photo": this.new_image,
-                            "office_address": this.new_address,
-                            "qualification_id": this.new_qualif,
-                            "schedule": this.new_schedule
-                        }).then(response => {
-                        console.log(this.new_schedule)
-                        Swal.fire({
-                            title: 'Успех',
-                            text: 'Нотариус изменен успешно',
-                            icon: 'success',
-                            confirmButtonText: 'Ок'
-                        });
-                        this.$router.push('/notaries')
-                    }).catch(function (error) {
-                        if (error.response) {
-                            Swal.fire({
-                                title: 'Ошибка',
-                                text: 'Невозможно изменить нотариуса',
-                                icon: 'error',
-                                confirmButtonText: 'Ок'
-                            });
-                        }
-                    });
+                   this.updateNotary();
                 }
             }
+        },
+        updateNotary() {
+            axios.put('/api/v1/notaries/' + this.$route.params.id,
+                    {
+                        "fio": this.new_fio,
+                        "description": this.new_desc,
+                        "photo": this.new_image,
+                        "office_address": this.new_address,
+                        "qualification_id": this.new_qualif,
+                        "schedule": this.new_schedule
+                    }).then(response => {
+                    Swal.fire({
+                        title: 'Успех',
+                        text: 'Нотариус изменен успешно',
+                        icon: 'success',
+                        confirmButtonText: 'Ок'
+                    });
+                    this.$router.push('/notaries')
+                }).catch(function (error) {
+                    if (error.response) {
+                        Swal.fire({
+                            title: 'Ошибка',
+                            text: 'Невозможно изменить нотариуса',
+                            icon: 'error',
+                            confirmButtonText: 'Ок'
+                        });
+                    }
+                });
         },
         onFileChange(e) {
             const file = e.target.files[0];
@@ -220,7 +244,6 @@ export default {
             reader.readAsDataURL(image);
             reader.onload = e =>{
                 this.new_image = e.target.result;
-                console.log(this.new_image);
             };
         },
         changeData(i, j, e) {
@@ -230,7 +253,6 @@ export default {
             else {
                 this.new_schedule[i][j] = 0;
             }
-            console.log(this.new_schedule);
         }
     },
     computed: {},
@@ -253,7 +275,7 @@ export default {
             }
         });
 
-        axios.get(`/api/v1/notaries/${notaryId}/edit`, ).then(response => {
+        axios.get(`/api/v1/notaries/${notaryId}/edit`).then(response => {
             this.notary = response.data;
             this.new_fio = response.data.fio;
             this.new_image = response.data.photo;
@@ -261,7 +283,6 @@ export default {
             this.new_address = response.data.office_address;
             this.new_schedule = response.data.schedule;
             this.new_qualif = response.data.qualification_id;
-            console.log(this.new_schedule);
         }).catch(function (error) {
             if (error.response) {
                 Swal.fire({

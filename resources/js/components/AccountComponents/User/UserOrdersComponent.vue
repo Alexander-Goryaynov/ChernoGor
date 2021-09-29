@@ -41,7 +41,7 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table table-striped table-hover table-bordered">
+                    <table v-if="orders" class="table table-striped table-hover table-bordered">
                         <thead>
                         <tr class="table-info">
                             <th>#</th>
@@ -73,6 +73,9 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div v-else>
+                        <h1>Упс... заказов пока нет</h1>
+                    </div>
                 </div>
             </div>
         </div>
