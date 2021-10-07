@@ -1,6 +1,6 @@
 import ExampleComponent from "./components/ExampleComponent";
 import ExampleSecondComponent from "./components/ExampleSecondComponent";
-
+import Vue from 'vue'
 import VueRouter from "vue-router";
 import TestComponent from "./components/TestComponent";
 import MainComponent from "./components/MainComponentItems/MainComponent";
@@ -34,48 +34,75 @@ const routes = [
         path: "/categories/create",
         component: ServiceCreateCatComponent,
         name: "categories-create", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/subcategories/create",
         component: ServiceCreateSubCatComponent,
         name: "subcategories-create", //admin
-        props: true
+        props: true,
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/create-order",
         component: CreateOrderComponent,
         name: "create-order", //user
+        meta: {
+            user: true
+        },
     },
     {
         path: "/register",
         component: RegisterComponent,
         name: "register", //guest
+        meta: {
+            guest: true
+        },
     },
     {
         path: "/login",
         component: LoginComponent,
         name: "login", //guest
+        meta: {
+            guest: true
+        },
     },
     {
         path: "/categories/:id",
         component: ServiceItemComponent,
         name: "categories-item", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/subcategories/:id",
         component: ServiceSubItemComponent,
         name: "subcategories-item", //admin
-        props: true
+        props: true,
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/notaries/create",
         component: NotaryCardCreateComponent,
         name: "notaries-create", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/notaries/:id",
         component: NotaryCardEditComponent,
         name: "notaries-item", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/notaries",
@@ -86,23 +113,38 @@ const routes = [
         path: "/admin/orders",
         component: AdminOrdersComponent,
         name: "admin-orders", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/admin/accounts",
         component: AdminUsersComponent,
         name: "admin-accounts", //admin
+        meta: {
+            admin: true
+        },
     },
     {
         path: "/account",
         component: UserDataComponent,
         name: "user-account", //user
+        meta: {
+            user: true
+        },
     },
     {
         path: "/account/orders",
         component: UserOrdersComponent,
         name: "user-account-orders", //user
-    },
-
+        meta: {
+            user: true
+        },
+    }, {
+        path: '/:notFound(.*)',
+        name: '404',
+        redirect: '/'
+    }
 ];
 
 const router = new VueRouter({
@@ -111,6 +153,34 @@ const router = new VueRouter({
     linkActiveClass: 'active',
     linkExactActiveClass: 'active'
 });
+
+router.beforeEach((to, from, next) => {
+    const requireAdmin = to.meta.admin
+    const requireUser = to.meta.user
+    const requireGuest = to.meta.guest
+    const root = window.$cookies.get("role");
+
+    if (requireAdmin || requireUser) {
+        if (!root) {
+            next({ name: 'login' })
+        }
+        else if (requireUser && root === 'user') {
+            next()
+        }
+        else if (requireAdmin && root === 'admin') {
+            next()
+        }
+        else next({ name: 'home' })
+    }
+    else if (requireGuest) {
+        if (root) {
+            next({ name: 'home' })
+        }
+    }
+    else {
+        next()
+    }
+})
 
 export default router;
 
