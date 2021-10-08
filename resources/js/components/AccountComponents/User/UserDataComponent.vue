@@ -30,7 +30,7 @@
                                             <label for="name" class="text-white h4 float-left mb-2">
                                                 ФИО пользователя:
                                             </label>
-                                            <input name="name" type="text" v-model="new_name"
+                                            <input name="name" type="text" v-model="account.name"
                                                    class="form-control"
                                                    id="name">
                                         </fieldset>
@@ -103,13 +103,14 @@ export default {
     data() {
         const account =
             {
-                email: "daenerys@mail.ru",
-                name: "Таргариен Дейнерис Эйрисовна",
+                email: "",
+                name: "",
             }
 
         return {
             account,
             new_name: null,
+            old_name: null,
             password: null,
             new_password: null,
             new_password_confirmation: null,
@@ -128,10 +129,11 @@ export default {
             }
         },
         checkData() {
+            this.new_name = this.account.name;
             if ((!this.password) || (!this.new_name) || ((!this.new_name) && (this.password) && (!this.new_password))) {
                 Swal.fire({
                     title: 'Ошибка',
-                    text: 'Заполните необходимые поля. Имя не должно быть пустым. Для изменения данных необходим пароль',
+                    text: 'Измените необходимые поля. Для изменения данных необходим пароль',
                     icon: 'error',
                     confirmButtonText: 'Ок'
                 });
@@ -139,9 +141,11 @@ export default {
                 this.password = this.password.trim();
                 if (this.new_password) this.new_password = this.new_password.trim();
                 if (this.new_password_confirmation) this.new_password_confirmation = this.new_password_confirmation.trim();
-
-                if ((this.new_name === this.account.name) && (!this.new_password)) {
+                if ((this.new_name === this.old_name) && (!this.new_password)) {
                     this.error_message += "Новое имя должно отличаться от старого.\n";
+                }
+                if ((this.new_password === this.password)) {
+                    this.error_message += "Новый пароль должен отличаться от старого.\n";
                 }
                 if (!(/^[a-zA-Zа-яА-Я ]+$/.test(this.name))) {
                     this.error_message += "ФИО должно содержать только буквы. \n";
@@ -152,7 +156,7 @@ export default {
                 if ((this.new_password) && ((this.new_password.length) < 3 || (this.new_password.length) > 30)) {
                     this.error_message += "Новый пароль должен содержать более 3 и менее 30 символов. \n";
                 }
-                if (this.new_password !== this.new_password_confirmation) {
+                if ((this.new_password && this.new_password_confirmation) && (this.new_password !== this.new_password_confirmation)) {
                     this.error_message += "Ваши пароли должны совпадать. \n";
                 }
                 if (this.error_message) {
@@ -164,12 +168,30 @@ export default {
                     })
                     this.error_message = '';
                 } else {
-                    Swal.fire({
-                        title: 'Все хорошо',
-                        text: this.error_message,
-                        icon: 'success',
-                        confirmButtonText: 'Ок'
-                    })
+                    const params = {}
+                    params.name = this.new_name;
+                    params.password = this.password;
+                    if (this.new_password) params.new_password = this.new_password;
+                    if (this.new_password_confirmation) params.new_password_confirmation = this.new_password_confirmation;
+
+                    axios.put('/api/v1/account', params).then(response => {
+                        this.$cookies.remove("name");
+                        this.$cookies.set("name", this.new_name, 21600);
+                        Swal.fire({
+                            title: 'Все хорошо',
+                            text: this.error_message,
+                            icon: 'success',
+                            confirmButtonText: 'Ок'
+                        })
+                        this.$router.push('/categories');
+                    }).catch(error => {
+                        Swal.fire({
+                            title: 'Ошибка',
+                            text: error,
+                            icon: 'error',
+                            confirmButtonText: 'Ок'
+                        })
+                    });
                 }
             }
         }
@@ -179,8 +201,13 @@ export default {
         window.scrollTo(0, 0)
     },
     created() {
-        //берем данные из vuex, ФИО и email текущего пользователя
-        this.new_name = this.account.name;
+        axios.get('/api/v1/user').then(response => {
+            this.account.name = response.data.name;
+            this.old_name = this.account.name;
+            this.account.email = response.data.email;
+        }).catch(error => {
+            console.log('Не удалось загрузить данные')
+        })
        /* запрос на сервер */
     },
 }

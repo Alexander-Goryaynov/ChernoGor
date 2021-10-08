@@ -116,13 +116,9 @@ export default {
                                 this.$cookies.set("email", response.data.email, 21600);
                                 this.$cookies.set("name", response.data.name, 21600);
                                 this.$cookies.set("role", response.data.role, 21600);
-                                console.log(this.$cookies.get("name"));
-                                console.log(this.$cookies.get("role"));
-                                console.log(this.$cookies.get("email"));
                                 if (this.$cookies.get("role") === 'admin') {
                                     this.updateNav = 2
                                 } else this.updateNav = 1
-                                console.log('Переменная в Логине - ' + this.updateNav);
                                 eventBus.$emit('updateNav', this.updateNav);
                                 if (this.$cookies.get("role") === 'user') {
                                     this.$router.push('/');

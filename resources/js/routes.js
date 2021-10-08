@@ -176,6 +176,9 @@ router.beforeEach((to, from, next) => {
         if (root) {
             next({ name: 'home' })
         }
+        else {
+            next()
+        }
     }
     else {
         next()

@@ -148,12 +148,6 @@ export default {
                         this.$cookies.set("role", 'user', 21600);
                         this.$router.push('/categories');
                     });
-                    Swal.fire({
-                        title: 'Ошибка',
-                        text: this.error_message,
-                        icon: 'error',
-                        confirmButtonText: 'Ок'
-                    })
                 }
             }
         }

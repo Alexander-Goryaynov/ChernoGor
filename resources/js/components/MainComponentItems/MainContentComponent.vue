@@ -11,7 +11,7 @@
                     <div class="col-md-4">
                         <router-link v-if="!isAuthorized" class="bord border-button" :to="{name: 'register'}">Зарегистрироваться</router-link>
                         <router-link v-else class="bord filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>

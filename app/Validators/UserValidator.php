@@ -16,7 +16,7 @@ class UserValidator
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => 'required|string|min:3|max:30|alpha',
+                'name' => 'required|string|min:3|max:30',
                 'password' => 'required|string',
                 'new_password' => 'sometimes|string|min:3|max:30',
                 'new_password_confirmation' => 'required_with:new_password|same:new_password|string'

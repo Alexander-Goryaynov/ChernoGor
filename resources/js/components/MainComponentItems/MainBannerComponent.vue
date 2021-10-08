@@ -80,13 +80,13 @@ export default {
     },
     watch: {
         updateNav: function(newVal, oldVal) { // watch it
-            if (this.$cookies.get("name") && this.$cookies.get("email")) {
+            if (this.$cookies.get("email")) {
                 this.isAuthorized = true;
             }
         }
     },
     created() {
-        if (this.$cookies.get("name") && this.$cookies.get("email")) {
+        if (this.$cookies.get("email")) {
            this.isAuthorized = true;
         }
         eventBus.$on('updateNav', data => {

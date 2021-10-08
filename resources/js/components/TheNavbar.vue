@@ -93,7 +93,7 @@ export default {
     },
     watch: {
         updateNav: function(newVal, oldVal) { // watch it
-            if (this.$cookies.get("name") && this.$cookies.get("email") && this.$cookies.get("role")) {
+            if (this.$cookies.get("email") && this.$cookies.get("role")) {
                 this.isAuthorized = true;
                 if (this.$cookies.get("role") === 'admin') {
                     this.isAdmin = true;
@@ -102,7 +102,7 @@ export default {
         }
     },
     created() {
-        if (this.$cookies.get("name") && this.$cookies.get("email") && this.$cookies.get("role")) {
+        if (this.$cookies.get("email") && this.$cookies.get("role")) {
            this.isAuthorized = true;
            if (this.$cookies.get("role") === 'admin') {
                this.isAdmin = true;
@@ -122,7 +122,7 @@ export default {
     methods: {
         logout() {
             try {
-               if (this.$cookies.get("name") && this.$cookies.get("email")) {
+               if (this.$cookies.get("email")) {
                     this.$cookies.remove("name");
                     this.$cookies.remove("role");
                     this.$cookies.remove("email");
