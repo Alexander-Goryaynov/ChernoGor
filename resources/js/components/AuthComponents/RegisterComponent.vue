@@ -124,8 +124,8 @@ export default {
                 if (!(/\S+@\S+\.\S+/.test(this.email))) {
                     this.error_message += "Email должен быть корректного формата. \n";
                 }
-                if ((this.password.length) < 3 || (this.password.length) > 30) {
-                    this.error_message += "Пароль должен содержать более 3 и менее 30 символов. \n";
+                if ((this.password.length) < 8 || (this.password.length) > 30) {
+                    this.error_message += "Пароль должен содержать более 8 и менее 30 символов. \n";
                 }
                 if (this.password !== this.password_confirmed) {
                     this.error_message += "Пароли должны совпадать. \n";

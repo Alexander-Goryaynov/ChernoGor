@@ -62,15 +62,18 @@
                                         </div>
                                         <div class="card-body text-center">
                                             <h4 class="card-title">
-                                                <router-link :to="{name: 'notaries-item', params: { id: notary.id }}"
-                                                   class=" font-weight-bold text-dark small">{{ notary.fio }}</router-link>
+                                                <router-link v-if="isAdmin" :to="{name: 'notaries-item', params: { id: notary.id }}"
+                                                   class="font-weight-bold text-dark small">{{ notary.fio }}</router-link>
+                                                <router-link v-else-if="isAuthorized" :to="{name: 'create-order'}"
+                                                             class="font-weight-bold text-dark small">{{ notary.fio }}</router-link>
+                                                <router-link v-else :to="{name: 'login'}"
+                                                             class="font-weight-bold text-dark small">{{ notary.fio }}</router-link>
                                                 <br>
                                                 <h6 class="mt-2">{{ notary.office_address }}</h6>
                                             </h4>
                                             <h5 class="card-price text-primary">
                                                 <h6 class="font-italic">{{ notary.qualification_name }}</h6>
                                             </h5>
-
                                         </div>
                                     </div>
                                 </div>
@@ -251,6 +254,9 @@ export default {
         if (this.$cookies.get('role') === 'admin') {
             this.isAuthorized = true;
             this.isAdmin = true;
+        }
+        else if (this.$cookies.get('role') === 'user') {
+            this.isAuthorized = true;
         }
         eventBus.$on('logout', data => {
             this.isAuthorized = false;

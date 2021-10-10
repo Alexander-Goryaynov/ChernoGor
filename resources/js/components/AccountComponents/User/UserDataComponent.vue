@@ -82,7 +82,7 @@
                                     <div class="col-lg-12">
                                         <fieldset>
                                             <button type="submit" id="form-submit" @click.prevent="checkData()"
-                                                    class="border-button">Создать аккаунт
+                                                    class="border-button">Сохранить
                                             </button>
                                         </fieldset>
                                     </div>
