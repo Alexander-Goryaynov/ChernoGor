@@ -79,6 +79,7 @@
 
 <script>
 import Swal from 'sweetalert2'
+import {eventBus} from "../../app";
 
 export default {
     data() {
@@ -89,7 +90,8 @@ export default {
             email: '',
             password: '',
             password_confirmed: '',
-            error_message: ''
+            error_message: '',
+            updateNav: 0
         }
     },
     methods: {
@@ -146,7 +148,9 @@ export default {
                         this.$cookies.set("email", this.email, 21600);
                         this.$cookies.set("name", this.name, 21600);
                         this.$cookies.set("role", 'user', 21600);
-                        this.$router.push('/categories');
+                        this.updateNav = 1;
+                        eventBus.$emit('updateNav', this.updateNav);
+                        this.$router.push('/');
                     });
                 }
             }

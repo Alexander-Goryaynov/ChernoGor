@@ -108,18 +108,24 @@ export default {
             } else if (this.sortType === 'по ср. стоимости') {
                 this.$router.replace({query: {'sort': 'average_sum'}})
             }
+            this.sortState = 'asc'
         },
         statusValue(value) {
             return this.statuses.find(x => x.name === value).value;
         },
         sortUp() {
-           if (this.sortState === 'asc') {
+            if (this.sortState === 'asc') {
                  this.sortState = 'desc';
             }
             else {
                 this.sortState = 'asc'
             }
-            this.getUsers();
+            if (this.$route.query.sort) {
+                let routeName = this.select_options.find((x) => x.name === this.$route.query.sort)
+                this.sortType = routeName.value;
+                this.getUsers(routeName.name);
+            }
+            else this.getUsers();
         },
         showByQuery() {
             if (this.$route.query.sort) {
@@ -137,7 +143,7 @@ export default {
                 console.log(this.error)
             })
         },
-    }, 
+    },
     watch: {
         '$route.query.sort'(newVal, oldVal) {
             if (newVal !== oldVal) {
@@ -148,7 +154,7 @@ export default {
     },
     created() {
             this.showByQuery();
-    }, 
+    },
 }
 </script>
 

@@ -129,7 +129,7 @@ export default {
             select_options,
             orders,
             statuses,
-            sortType: 'по статусу',          
+            sortType: 'по статусу',
             sortState: 'asc'
         }
     },
@@ -142,6 +142,7 @@ export default {
             } else if (this.sortType === 'по цене') {
                 this.$router.replace({query: {'sort': 'price'}})
             }
+            this.sortState = 'asc'
         },
         isActive(status) {
             if (status === 'processing') {
@@ -155,13 +156,18 @@ export default {
             return this.statuses.find(x => x.name === value).value;
         },
         sortUp() {
-           if (this.sortState === 'asc') {
+            if (this.sortState === 'asc') {
                  this.sortState = 'desc';
             }
             else {
                 this.sortState = 'asc'
             }
-            this.getOrders();
+            if (this.$route.query.sort) {
+                let routeName = this.select_options.find((x) => x.name === this.$route.query.sort)
+                this.sortType = routeName.value;
+                this.getOrders(routeName.name);
+            }
+            else this.getOrders();
         },
         finish(id) {
              axios.post('/api/v1/orders/' + id + '/finish').then(response => {
@@ -182,6 +188,7 @@ export default {
             else this.getOrders();
         },
         getOrders(sortType = 'status') {
+            //let sortView = this.select_options.find((x) => x.name === this.$route.query.sort)
             axios.get(`/api/v1/orders?sort=${sortType}:${this.sortState}`).then(response => {
                 this.orders = response.data.orders;
             }).catch(error => {
@@ -191,7 +198,7 @@ export default {
     },
     created() {
         this.showByQuery();
-    }, 
+    },
     watch: {
         '$route.query.sort'(newVal, oldVal) {
             if (newVal !== oldVal) {
