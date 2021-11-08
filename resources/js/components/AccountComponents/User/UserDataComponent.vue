@@ -185,12 +185,14 @@ export default {
                         })
                         this.$router.push('/categories');
                     }).catch(error => {
-                        Swal.fire({
-                            title: 'Ошибка',
-                            text: error,
-                            icon: 'error',
-                            confirmButtonText: 'Ок'
-                        })
+                        if (error.response.status === 401) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Введен неверный пароль',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            })
+                        }
                     });
                 }
             }

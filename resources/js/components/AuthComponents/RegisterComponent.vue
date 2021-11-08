@@ -151,6 +151,15 @@ export default {
                         this.updateNav = 1;
                         eventBus.$emit('updateNav', this.updateNav);
                         this.$router.push('/');
+                    }).catch(error => {
+                        if (error.response.status === 422) {
+                            Swal.fire({
+                                title: 'Ошибка',
+                                text: 'Такой пользователь уже зарегистрирован',
+                                icon: 'error',
+                                confirmButtonText: 'Ок'
+                            })
+                        }
                     });
                 }
             }

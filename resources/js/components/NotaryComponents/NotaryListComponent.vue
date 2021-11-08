@@ -26,8 +26,9 @@
                                 </div>
                                 <div id="wrapper">
                                     <div class="btn-group btn-group-sm float-md-right" id="button-group-block">
-                                        <input type="text" v-model="filter.fio" class="style-input">
-                                        <button type="button" class="btn btn-primary" @click.prevent="searchNotary"><h6>Поиск</h6></button>
+                                        <input type="text" v-model="filter.fio" class="style-input" v-on:keyup.enter="searchNotary">
+                                        <button type="button" class="btn btn-primary" @click.prevent="searchNotary"
+                                               ><h6>Поиск</h6></button>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +107,7 @@
                         </select>
                         <div v-if="show">
                             <hr>
-                            <h5 class="font-weight-bold text-dark">Коэффициенты кваливикаций</h5>
+                            <h5 class="font-weight-bold text-dark">Коэффициенты квалификаций</h5>
                             <h5>Средняя: цена услуги</h5>
                             <br>
                             <h5>Высшая: цена услуги <span class="text-primary">* 1,25</span></h5>
