@@ -57,7 +57,7 @@
                             <td>{{ account.name }}</td>
                             <td>{{ account.created_at }}</td>
                             <td>{{ account.orders_count }}</td>
-                            <td>{{ account.average_sum }} рублей</td>
+                            <td>{{ Math.round(account.average_sum) }} рублей</td>
                             <td>{{ account.last_ordered_at }}</td>
                         </tr>
                         </tbody>

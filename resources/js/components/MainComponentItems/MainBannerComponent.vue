@@ -13,7 +13,7 @@
                                     <h4>Сложная задача - <br>простое решение</h4>
                                     <p>Нотариальная контора "Chernogor" поможет Вам с легкостью найти подходящего
                                         нотариуса и решить Вашу проблему в кратчайшие сроки.</p>
-                                    <router-link v-if="isAuthorized" class="filled-button" :to="{name: 'create-order'}">Оставить заявку
+                                    <router-link v-if="isAuthorized && !isAdmin" class="filled-button" :to="{name: 'create-order'}">Оставить заявку
                                     </router-link>
                                     <router-link v-else class="filled-button" :to="{name: 'register'}">Зарегистрироваться
                                     </router-link>
@@ -75,7 +75,8 @@ export default {
     data() {
         return {
             isAuthorized: null,
-            updateNav: null
+            updateNav: null,
+            isAdmin: false
         }
     },
     watch: {
@@ -86,12 +87,16 @@ export default {
         }
     },
     created() {
-        if (this.$cookies.get("email")) {
-           this.isAuthorized = true;
+        if (this.$cookies.get("role")) {
+            this.isAuthorized = true;
+            if (this.$cookies.get("role") === 'admin') {
+                this.isAdmin = true;
+            }
         }
         eventBus.$on('updateNav', data => {
             this.updateNav = data.updateNav;
             this.isAuthorized = true;
+
         })
     }
 };

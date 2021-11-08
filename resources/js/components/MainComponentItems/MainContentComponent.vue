@@ -1,16 +1,16 @@
 <template>
     <div>
-        <div class="request-form">
+        <div v-if="!isAdmin" class="request-form">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div  class="col-md-8">
                         <h4>Хотите записаться к нам на приём?</h4>
                         <span v-if="!isAuthorized">Зарегистрируйтесь и оставьте заявку на нашем сайте прямо сейчас</span>
                         <span v-else>Здравствуйте, {{ userName }}, оставьте заявку на нашем сайте прямо сейчас</span>
                     </div>
                     <div class="col-md-4">
                         <router-link v-if="!isAuthorized" class="bord border-button" :to="{name: 'register'}">Зарегистрироваться</router-link>
-                        <router-link v-else class="bord filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
+                        <router-link class="bord filled-button" :to="{name: 'create-order'}">Оставить заявку</router-link>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,8 @@ export default {
         return {
             isAuthorized: null,
             updateNav: null,
-            userName: null
+            userName: null,
+            isAdmin: false
         }
     },
     watch: {
@@ -91,6 +92,9 @@ export default {
         if (this.$cookies.get("name") && this.$cookies.get("email")) {
            this.isAuthorized = true;
            this.userName = this.$cookies.get("name");
+            if (this.$cookies.get("role") === 'admin') {
+                this.isAdmin = true;
+            }
         }
         eventBus.$on('updateNav', data => {
             this.updateNav = data.updateNav;
